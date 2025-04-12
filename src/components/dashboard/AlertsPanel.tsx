@@ -1,5 +1,6 @@
 
 import { AlertTriangle, FileText, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { Alert } from "@/pages/dashboard/DashboardPage";
 
 type AlertsPanelProps = {
@@ -7,6 +8,8 @@ type AlertsPanelProps = {
 };
 
 const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
+  const navigate = useNavigate();
+  
   const getAlertIcon = (type: Alert['type']) => {
     switch (type) {
       case 'document':
@@ -32,6 +35,21 @@ const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
         return "bg-gray-50";
     }
   };
+  
+  const handleAlertClick = (alert: Alert) => {
+    if (alert.dealId) {
+      if (alert.type === 'covenant') {
+        navigate(`/deals/${alert.dealId}/monitoring?tab=covenants`);
+      } else if (alert.type === 'document') {
+        navigate(`/deals/${alert.dealId}/monitoring?tab=documents`);
+      } else if (alert.type === 'payment') {
+        navigate(`/deals/${alert.dealId}/loan-admin`);
+      } else {
+        navigate(`/deals/${alert.dealId}`);
+      }
+      console.info(`Navigating to deal ${alert.dealId}`);
+    }
+  };
 
   return (
     <div className="w-80 border-l border-gray-200 overflow-y-auto bg-gray-50 p-4">
@@ -42,6 +60,7 @@ const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
           <div
             key={alert.id}
             className={`flex items-start p-3 rounded-md cursor-pointer transition-colors hover:bg-opacity-80 ${getBgColor(alert.severity)}`}
+            onClick={() => handleAlertClick(alert)}
           >
             <div className="mr-3 mt-0.5">
               {getAlertIcon(alert.type)}
