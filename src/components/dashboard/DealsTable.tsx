@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import type { Deal } from "@/pages/dashboard/DashboardPage";
 
@@ -20,9 +19,7 @@ const DealsTable = ({ deals }: DealsTableProps) => {
   };
 
   const handleRowClick = (dealId: string) => {
-    // In a real application, this would navigate to the specific deal
-    console.log(`Navigating to deal ${dealId}`);
-    // navigate(`/deal/${dealId}`);
+    navigate(`/deals/${dealId}/monitoring`);
   };
 
   return (
