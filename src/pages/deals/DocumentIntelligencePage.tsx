@@ -30,7 +30,7 @@ const DocumentIntelligencePage = () => {
   const [isDragging, setIsDragging] = useState(false);
   
   // Mock data for demo purposes
-  const mockFiles = [
+  const mockFiles: FileWithStatus[] = [
     {
       id: "1",
       name: "CreditAgreement.pdf",
@@ -122,9 +122,10 @@ const DocumentIntelligencePage = () => {
                 const extractionResults = [];
                 
                 for (let i = 0; i < numResults; i++) {
+                  const resultStatus = Math.random() > 0.2 ? "success" as const : "warning" as const;
                   extractionResults.push({
                     item: `Item ${i + 1} extracted`,
-                    status: Math.random() > 0.2 ? "success" as const : "warning" as const,
+                    status: resultStatus,
                     message: `Extraction detail ${i + 1}`
                   });
                 }
@@ -152,7 +153,7 @@ const DocumentIntelligencePage = () => {
                   extractionResults: [
                     { 
                       item: "Processing error", 
-                      status: "error", 
+                      status: "error" as const, 
                       message: "Could not process this document format" 
                     }
                   ]

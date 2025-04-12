@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -252,10 +251,8 @@ const AIAgentDashboardPage = () => {
   
   const goToActivityDetail = (activity: AgentActivity) => {
     if (activity.dealId) {
-      // Navigate to deal page if activity is related to a specific deal
       navigate(`/deals/${activity.dealId}`);
     } else {
-      // Show toast with activity details
       toast({
         title: `${activity.botName} - ${new Intl.DateTimeFormat('en-US', {
           dateStyle: 'medium',
@@ -452,7 +449,6 @@ const AIAgentDashboardPage = () => {
         </Tabs>
       </div>
       
-      {/* Bot Configuration Dialog */}
       <Dialog open={showConfig} onOpenChange={setShowConfig}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -520,7 +516,7 @@ const AIAgentDashboardPage = () => {
                     placeholder="Template content with variables like {{variable}}"
                   />
                   <p className="text-xs text-gray-500">
-                    Use variables like {{lender}}, {{date}}, etc. that will be replaced with actual values.
+                    Use variables like &#123;&#123;lender&#125;&#125;, &#123;&#123;date&#125;&#125;, etc. that will be replaced with actual values.
                   </p>
                 </div>
               )}
