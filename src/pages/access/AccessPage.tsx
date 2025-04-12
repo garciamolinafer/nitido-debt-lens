@@ -3,10 +3,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { useAuth } from "@/App";
 
 const AccessPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleSSOLogin = () => {
     setIsLoading(true);
@@ -14,11 +16,12 @@ const AccessPage = () => {
     // Simulate SSO authentication process
     setTimeout(() => {
       setIsLoading(false);
+      login(); // Set authenticated state
       toast({
         title: "Authentication successful",
         description: "Welcome to Nítido Debt",
       });
-      navigate("/dashboard");
+      navigate("/");
     }, 1500);
   };
 

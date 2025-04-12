@@ -3,7 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams, Navigate } from "react-router-dom";
+import { useState, createContext, useContext } from "react";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import NotFound from "./pages/NotFound";
@@ -15,8 +16,26 @@ import AIAgentDashboardPage from "./pages/ai/AIAgentDashboardPage";
 import IntegrationSettingsPage from "./pages/settings/IntegrationSettingsPage";
 import AIChatAssistantButton from "./components/ai/AIChatAssistantButton";
 import NotificationCenter from "./components/notifications/NotificationCenter";
+import AccessPage from "./pages/access/AccessPage";
 
 const queryClient = new QueryClient();
+
+// Create an authentication context to manage login state
+type AuthContextType = {
+  isAuthenticated: boolean;
+  login: () => void;
+  logout: () => void;
+};
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
 
 // Wrapper component to provide deal context to AIChatAssistantButton
 const DealPageWrapper = () => {
@@ -28,31 +47,91 @@ const DealPageWrapper = () => {
   );
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <div className="flex items-center justify-end gap-2 fixed top-4 right-4 z-50">
-          <NotificationCenter />
-        </div>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/deals/:dealId" element={<DealDetailPage />} />
-          <Route path="/deals/:dealId/loan-admin" element={<DealLoanAdminPage />} />
-          <Route path="/deals/:dealId/monitoring" element={<DealMonitoringPage />} />
-          <Route path="/deals/:dealId/documents" element={<DocumentIntelligencePage />} />
-          <Route path="/ai/agent-dashboard" element={<AIAgentDashboardPage />} />
-          <Route path="/settings/integrations" element={<IntegrationSettingsPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <AIChatAssistantButton />
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/access" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  const login = () => {
+    setIsAuthenticated(true);
+  };
+  
+  const logout = () => {
+    setIsAuthenticated(false);
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            {isAuthenticated && (
+              <div className="flex items-center justify-end gap-2 fixed top-4 right-4 z-50">
+                <NotificationCenter />
+              </div>
+            )}
+            <Routes>
+              <Route path="/access" element={<AccessPage />} />
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/deals/:dealId" element={
+                <ProtectedRoute>
+                  <DealDetailPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/deals/:dealId/loan-admin" element={
+                <ProtectedRoute>
+                  <DealLoanAdminPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/deals/:dealId/monitoring" element={
+                <ProtectedRoute>
+                  <DealMonitoringPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/deals/:dealId/documents" element={
+                <ProtectedRoute>
+                  <DocumentIntelligencePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/ai/agent-dashboard" element={
+                <ProtectedRoute>
+                  <AIAgentDashboardPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/settings/integrations" element={
+                <ProtectedRoute>
+                  <IntegrationSettingsPage />
+                </ProtectedRoute>
+              } />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            {isAuthenticated && <AIChatAssistantButton />}
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthContext.Provider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

@@ -1,12 +1,13 @@
 
 import { useState } from "react";
-import { Bell, MessageSquare, ChevronDown, Search, Home } from "lucide-react";
+import { Bell, MessageSquare, ChevronDown, Search, Home, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/App";
 
 export type Deal = {
   id: string;
@@ -26,6 +27,7 @@ export type Alert = {
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   // Sample data for prototype
   const [deals, setDeals] = useState<Deal[]>([
     {
@@ -89,6 +91,11 @@ const DashboardPage = () => {
     deal.borrower.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleLogout = () => {
+    logout();
+    navigate("/access");
+  };
+
   return (
     <div className="flex h-screen bg-white">
       {/* Sidebar */}
@@ -126,12 +133,24 @@ const DashboardPage = () => {
               <MessageSquare size={20} />
             </Button>
             
-            <div className="flex items-center ml-4 cursor-pointer">
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
-                <span className="text-sm font-medium">JD</span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                  <span className="text-sm font-medium">JD</span>
+                </div>
+                <span className="text-sm mr-1">John Doe</span>
+                <ChevronDown size={16} />
               </div>
-              <span className="text-sm mr-1">John Doe</span>
-              <ChevronDown size={16} />
+              
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="flex items-center gap-1 ml-2"
+                onClick={handleLogout}
+              >
+                <LogOut size={16} />
+                <span>Logout</span>
+              </Button>
             </div>
           </div>
         </header>

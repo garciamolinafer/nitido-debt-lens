@@ -1,18 +1,31 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, BarChart2, FileText, MessageSquare, Settings, Database, Bot, Users } from "lucide-react";
+import { ArrowRight, BarChart2, FileText, MessageSquare, Settings, Database, Bot, LogOut } from "lucide-react";
+import { useAuth } from "@/App";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/access");
+  };
 
   return (
     <div className="container max-w-7xl mx-auto p-6">
-      <header className="mb-12 text-center">
-        <h1 className="text-4xl font-bold mb-4">Nítido Loan Management Platform</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          AI-powered loan management platform for syndicated lending portfolios
-        </p>
+      <header className="mb-12 flex justify-between items-center">
+        <div className="text-center flex-1">
+          <h1 className="text-4xl font-bold mb-4">Nítido Loan Management Platform</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            AI-powered loan management platform for syndicated lending portfolios
+          </p>
+        </div>
+        <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
+          <LogOut size={16} /> Logout
+        </Button>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,7 +65,7 @@ const Index = () => {
             </p>
           </CardContent>
           <CardFooter>
-            <Button onClick={() => navigate("/deals/apollo-energy/documents")} className="w-full">
+            <Button onClick={() => navigate("/deals/1/documents")} className="w-full">
               Try Document Intelligence <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
@@ -145,7 +158,7 @@ const Index = () => {
             </p>
           </CardContent>
           <CardFooter>
-            <Button onClick={() => navigate("/deals/apollo-energy")} className="w-full">
+            <Button onClick={() => navigate("/deals/1")} className="w-full">
               View Sample Deal <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
