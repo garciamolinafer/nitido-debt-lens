@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ChevronLeft, Upload, Download, Search, CheckCircle, AlertTriangle, Calendar, FileText } from "lucide-react";
@@ -87,6 +86,13 @@ const DealMonitoringPage = () => {
   // Find the deal data based on dealId
   const deal = dealId && dealData[dealId as keyof typeof dealData] ? dealData[dealId as keyof typeof dealData] : {
     name: `Deal ${dealId}`,
+    amount: "Unknown",
+    type: "Unknown",
+    maturity: "Unknown",
+    interest: "Unknown",
+    arranger: "Unknown",
+    agent: "Unknown",
+    syndicateSize: "Unknown",
     status: "normal",
     events: [],
     covenants: [],
