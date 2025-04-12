@@ -1,11 +1,12 @@
 
 import { useState } from "react";
-import { Bell, MessageSquare, ChevronDown, Search } from "lucide-react";
+import { Bell, MessageSquare, ChevronDown, Search, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
+import { useNavigate } from "react-router-dom";
 
 export type Deal = {
   id: string;
@@ -24,6 +25,7 @@ export type Alert = {
 };
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
   // Sample data for prototype
   const [deals, setDeals] = useState<Deal[]>([
     {
@@ -96,12 +98,22 @@ const DashboardPage = () => {
       <div className="flex flex-col flex-1">
         {/* Top Navigation Bar */}
         <header className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
-          <div>
+          <div className="flex items-center gap-2">
             <img 
               src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png" 
               alt="Nítido Logo" 
-              className="h-6"
+              className="h-6 cursor-pointer"
+              onClick={() => navigate("/")}
             />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="flex items-center gap-1"
+              onClick={() => navigate("/")}
+            >
+              <Home size={16} />
+              <span>Home</span>
+            </Button>
           </div>
           
           <div className="flex items-center space-x-4">
