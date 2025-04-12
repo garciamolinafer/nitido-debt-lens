@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ChevronLeft, Upload, Download, Search, CheckCircle, AlertTriangle, Calendar, FileText } from "lucide-react";
@@ -192,6 +193,7 @@ const DealMonitoringPage = () => {
             defaultValue={activeTab} 
             value={activeTab} 
             onValueChange={handleTabChange}
+            className="w-full"
           >
             <TabsList className="mb-0">
               <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -201,270 +203,270 @@ const DealMonitoringPage = () => {
               <TabsTrigger value="ai-qa">AI Q&A</TabsTrigger>
               <TabsTrigger value="loan-admin">Loan Administration</TabsTrigger>
             </TabsList>
-          </Tabs>
-        </div>
-        
-        {/* Main content area with scrolling */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {/* Back button */}
-          <Button 
-            variant="ghost" 
-            className="mb-4 flex items-center text-gray-600"
-            onClick={handleBackToDashboard}
-          >
-            <ChevronLeft className="mr-1 h-4 w-4" /> Back to Dashboard
-          </Button>
-          
-          {/* Tab Content */}
-          <TabsContent value="overview" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Key Deal Parameters */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Key Deal Parameters</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Deal Amount</p>
-                    <p className="font-medium">{deal.amount}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Deal Type</p>
-                    <p className="font-medium">{deal.type}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Maturity</p>
-                    <p className="font-medium">{deal.maturity}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Interest</p>
-                    <p className="font-medium">{deal.interest}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Arranger</p>
-                    <p className="font-medium">{deal.arranger}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Agent</p>
-                    <p className="font-medium">{deal.agent}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Syndicate Size</p>
-                    <p className="font-medium">{deal.syndicateSize}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Status</p>
-                    <p className="font-medium">{getStatusLabel(deal.status)}</p>
-                  </div>
-                </CardContent>
-              </Card>
+            
+            {/* Main content area with scrolling */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Back button */}
+              <Button 
+                variant="ghost" 
+                className="mb-4 flex items-center text-gray-600"
+                onClick={handleBackToDashboard}
+              >
+                <ChevronLeft className="mr-1 h-4 w-4" /> Back to Dashboard
+              </Button>
               
-              {/* Recent Events Timeline */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Recent Events Timeline</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {deal.events.map(event => (
-                    <div 
-                      key={event.id} 
-                      className={`flex p-3 rounded-md ${getEventSeverityClass(event.severity)}`}
-                    >
-                      <div className="mr-3">
-                        {getEventIcon(event.type)}
+              {/* Tab Content - Make sure these are inside the Tabs component */}
+              <TabsContent value="overview">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Key Deal Parameters */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Key Deal Parameters</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-500">Deal Amount</p>
+                        <p className="font-medium">{deal.amount}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{event.title}</p>
-                        <p className="text-xs text-gray-500">{event.date}</p>
+                        <p className="text-sm text-gray-500">Deal Type</p>
+                        <p className="font-medium">{deal.type}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Maturity</p>
+                        <p className="font-medium">{deal.maturity}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Interest</p>
+                        <p className="font-medium">{deal.interest}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Arranger</p>
+                        <p className="font-medium">{deal.arranger}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Agent</p>
+                        <p className="font-medium">{deal.agent}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Syndicate Size</p>
+                        <p className="font-medium">{deal.syndicateSize}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Status</p>
+                        <p className="font-medium">{getStatusLabel(deal.status)}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Recent Events Timeline */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Recent Events Timeline</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {deal.events.map(event => (
+                        <div 
+                          key={event.id} 
+                          className={`flex p-3 rounded-md ${getEventSeverityClass(event.severity)}`}
+                        >
+                          <div className="mr-3">
+                            {getEventIcon(event.type)}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{event.title}</p>
+                            <p className="text-xs text-gray-500">{event.date}</p>
+                          </div>
+                        </div>
+                      ))}
+                      {deal.events.length === 0 && (
+                        <p className="text-center text-gray-500 text-sm p-4">
+                          No recent events
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="covenants">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Covenant Summary</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Covenant</TableHead>
+                          <TableHead>Requirement</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Latest Value</TableHead>
+                          <TableHead>Date Measured</TableHead>
+                          <TableHead>Next Test</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {deal.covenants.map(covenant => (
+                          <TableRow key={covenant.id}>
+                            <TableCell className="font-medium">{covenant.name}</TableCell>
+                            <TableCell>{covenant.requirement}</TableCell>
+                            <TableCell>
+                              {covenant.status === 'breached' ? (
+                                <span className="flex items-center text-red-600">
+                                  <AlertTriangle className="h-4 w-4 mr-1" /> Breached
+                                </span>
+                              ) : (
+                                <span className="flex items-center text-green-600">
+                                  <CheckCircle className="h-4 w-4 mr-1" /> Compliant
+                                </span>
+                              )}
+                            </TableCell>
+                            <TableCell className={covenant.status === 'breached' ? "text-red-600 font-medium" : ""}>
+                              {covenant.value}
+                            </TableCell>
+                            <TableCell>{covenant.date}</TableCell>
+                            <TableCell>{covenant.nextTest}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    {deal.covenants.length === 0 && (
+                      <p className="text-center text-gray-500 text-sm p-4">
+                        No covenants found for this deal
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="documents">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="relative w-64">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Search documents..."
+                      className="pl-8"
+                      value={documentFilter}
+                      onChange={(e) => setDocumentFilter(e.target.value)}
+                    />
+                  </div>
+                  <Button>
+                    <Upload className="h-4 w-4 mr-2" /> Upload Document
+                  </Button>
+                </div>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Documents</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {filteredDocuments.length > 0 ? (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Document Name</TableHead>
+                            <TableHead>Category</TableHead>
+                            <TableHead>Upload Date</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredDocuments.map(doc => (
+                            <TableRow key={doc.id}>
+                              <TableCell className="font-medium">{doc.name}</TableCell>
+                              <TableCell>{doc.category}</TableCell>
+                              <TableCell>{doc.uploadDate}</TableCell>
+                              <TableCell>
+                                {doc.status === 'extracted' ? (
+                                  <span className="flex items-center text-green-600 text-sm">
+                                    <CheckCircle className="h-3 w-3 mr-1" /> Extracted
+                                  </span>
+                                ) : doc.status === 'needs_review' ? (
+                                  <span className="flex items-center text-amber-600 text-sm">
+                                    <AlertTriangle className="h-3 w-3 mr-1" /> Needs Review
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-500 text-sm">{doc.status}</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <Button variant="outline" size="sm" className="h-7 text-xs">
+                                  <Download className="h-3 w-3 mr-1" /> Download
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ) : (
+                      <p className="text-center text-gray-500 text-sm p-4">
+                        No documents match your search
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="participants">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Deal Participants</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Participant</TableHead>
+                          <TableHead>Role</TableHead>
+                          <TableHead>Share</TableHead>
+                          <TableHead>Contact</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {deal.participants.map(participant => (
+                          <TableRow key={participant.id}>
+                            <TableCell className="font-medium">{participant.name}</TableCell>
+                            <TableCell>{participant.role}</TableCell>
+                            <TableCell>{participant.share}</TableCell>
+                            <TableCell>{participant.contact}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="ai-qa">
+                <Card className="h-[calc(100vh-220px)]">
+                  <CardHeader>
+                    <CardTitle>AI Assistant - {deal.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[calc(100%-80px)] flex flex-col">
+                    <div className="flex-1 bg-gray-50 rounded-md p-4 mb-4 overflow-y-auto">
+                      <div className="bg-white p-3 rounded-lg mb-4 max-w-3xl ml-auto">
+                        <p className="text-gray-600">How can I help with the {deal.name} deal?</p>
+                      </div>
+                      <div className="bg-gray-100 p-3 rounded-lg mb-4 max-w-3xl">
+                        <p>You're looking at the {deal.name} deal. This is a {deal.type} with a total amount of {deal.amount}. 
+                        {deal.status === 'breach' && " There's currently a covenant breach that requires attention."} 
+                        {deal.status === 'warning' && " There are some items that need your attention."} 
+                        {deal.status === 'normal' && " All parameters are currently in compliance."}
+                        </p>
+                        <p className="mt-2">You can ask me questions about this deal's covenants, documentation, payment history, or other specifics. How can I assist you today?</p>
                       </div>
                     </div>
-                  ))}
-                  {deal.events.length === 0 && (
-                    <p className="text-center text-gray-500 text-sm p-4">
-                      No recent events
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
+                    <div className="flex items-center">
+                      <Input placeholder="Ask a question about this deal..." className="mr-2" />
+                      <Button>Send</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="covenants" className="mt-0">
-            <Card>
-              <CardHeader>
-                <CardTitle>Covenant Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Covenant</TableHead>
-                      <TableHead>Requirement</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Latest Value</TableHead>
-                      <TableHead>Date Measured</TableHead>
-                      <TableHead>Next Test</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {deal.covenants.map(covenant => (
-                      <TableRow key={covenant.id}>
-                        <TableCell className="font-medium">{covenant.name}</TableCell>
-                        <TableCell>{covenant.requirement}</TableCell>
-                        <TableCell>
-                          {covenant.status === 'breached' ? (
-                            <span className="flex items-center text-red-600">
-                              <AlertTriangle className="h-4 w-4 mr-1" /> Breached
-                            </span>
-                          ) : (
-                            <span className="flex items-center text-green-600">
-                              <CheckCircle className="h-4 w-4 mr-1" /> Compliant
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell className={covenant.status === 'breached' ? "text-red-600 font-medium" : ""}>
-                          {covenant.value}
-                        </TableCell>
-                        <TableCell>{covenant.date}</TableCell>
-                        <TableCell>{covenant.nextTest}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                {deal.covenants.length === 0 && (
-                  <p className="text-center text-gray-500 text-sm p-4">
-                    No covenants found for this deal
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="documents" className="mt-0">
-            <div className="flex justify-between items-center mb-4">
-              <div className="relative w-64">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-                <Input
-                  placeholder="Search documents..."
-                  className="pl-8"
-                  value={documentFilter}
-                  onChange={(e) => setDocumentFilter(e.target.value)}
-                />
-              </div>
-              <Button>
-                <Upload className="h-4 w-4 mr-2" /> Upload Document
-              </Button>
-            </div>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Documents</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {filteredDocuments.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Document Name</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Upload Date</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredDocuments.map(doc => (
-                        <TableRow key={doc.id}>
-                          <TableCell className="font-medium">{doc.name}</TableCell>
-                          <TableCell>{doc.category}</TableCell>
-                          <TableCell>{doc.uploadDate}</TableCell>
-                          <TableCell>
-                            {doc.status === 'extracted' ? (
-                              <span className="flex items-center text-green-600 text-sm">
-                                <CheckCircle className="h-3 w-3 mr-1" /> Extracted
-                              </span>
-                            ) : doc.status === 'needs_review' ? (
-                              <span className="flex items-center text-amber-600 text-sm">
-                                <AlertTriangle className="h-3 w-3 mr-1" /> Needs Review
-                              </span>
-                            ) : (
-                              <span className="text-gray-500 text-sm">{doc.status}</span>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <Button variant="outline" size="sm" className="h-7 text-xs">
-                              <Download className="h-3 w-3 mr-1" /> Download
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <p className="text-center text-gray-500 text-sm p-4">
-                    No documents match your search
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="participants" className="mt-0">
-            <Card>
-              <CardHeader>
-                <CardTitle>Deal Participants</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Participant</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Share</TableHead>
-                      <TableHead>Contact</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {deal.participants.map(participant => (
-                      <TableRow key={participant.id}>
-                        <TableCell className="font-medium">{participant.name}</TableCell>
-                        <TableCell>{participant.role}</TableCell>
-                        <TableCell>{participant.share}</TableCell>
-                        <TableCell>{participant.contact}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="ai-qa" className="mt-0">
-            <Card className="h-[calc(100vh-220px)]">
-              <CardHeader>
-                <CardTitle>AI Assistant - {deal.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="h-[calc(100%-80px)] flex flex-col">
-                <div className="flex-1 bg-gray-50 rounded-md p-4 mb-4 overflow-y-auto">
-                  <div className="bg-white p-3 rounded-lg mb-4 max-w-3xl ml-auto">
-                    <p className="text-gray-600">How can I help with the {deal.name} deal?</p>
-                  </div>
-                  <div className="bg-gray-100 p-3 rounded-lg mb-4 max-w-3xl">
-                    <p>You're looking at the {deal.name} deal. This is a {deal.type} with a total amount of {deal.amount}. 
-                    {deal.status === 'breach' && " There's currently a covenant breach that requires attention."} 
-                    {deal.status === 'warning' && " There are some items that need your attention."} 
-                    {deal.status === 'normal' && " All parameters are currently in compliance."}
-                    </p>
-                    <p className="mt-2">You can ask me questions about this deal's covenants, documentation, payment history, or other specifics. How can I assist you today?</p>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <Input placeholder="Ask a question about this deal..." className="mr-2" />
-                  <Button>Send</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import NotFound from "./pages/NotFound";
@@ -15,6 +15,16 @@ import AIAgentDashboardPage from "./pages/ai/AIAgentDashboardPage";
 import AIChatAssistantButton from "./components/ai/AIChatAssistantButton";
 
 const queryClient = new QueryClient();
+
+// Wrapper component to provide deal context to AIChatAssistantButton
+const DealPageWrapper = () => {
+  const { dealId } = useParams();
+  return (
+    <>
+      <AIChatAssistantButton context={{ dealId }} />
+    </>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
