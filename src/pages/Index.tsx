@@ -1,8 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, BarChart2, FileText, MessageSquare, Settings, Database, Robot, Users } from "lucide-react";
+import { ArrowRight, BarChart2, FileText, MessageSquare, Settings, Database, Bot, Users } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -93,7 +92,7 @@ const Index = () => {
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Robot className="h-5 w-5" /> AI Agent Dashboard
+              <Bot className="h-5 w-5" /> AI Agent Dashboard
             </CardTitle>
             <CardDescription>Configure and manage AI automation tasks</CardDescription>
           </CardHeader>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Bell, X, Check, FileText, AlertTriangle, MessageSquare, Bot, Filter } from "lucide-react";
 import { 
@@ -20,7 +19,7 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { NotificationSetting } from "./NotificationSettingsDialog";
+import { NotificationSettingsDialog } from "./NotificationSettingsDialog";
 
 export type NotificationType = 
   | "document" 
