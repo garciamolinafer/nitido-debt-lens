@@ -128,20 +128,16 @@ export const useNotifications = () => {
   };
 
   const delegateToAI = (id: string) => {
-    // Find the notification to delegate
     const notification = notifications.find(n => n.id === id);
     if (!notification) return;
     
-    // Apply AI action based on notification type
     toast({
       title: "AI Assistant activated",
       description: `AI is handling: ${notification.title.toLowerCase()}`,
     });
     
-    // Mark as read after delegating
     markAsRead(id);
     
-    // Add a follow-up notification based on type
     setTimeout(() => {
       if (notification.type === "document") {
         addNotification({
@@ -226,30 +222,25 @@ const NotificationItem = ({
     const now = new Date();
     const diff = now.getTime() - notification.timestamp.getTime();
     
-    // Less than a minute
     if (diff < 60 * 1000) {
       return 'Just now';
     }
     
-    // Less than an hour
     if (diff < 60 * 60 * 1000) {
       const minutes = Math.floor(diff / (60 * 1000));
       return `${minutes}m ago`;
     }
     
-    // Less than a day
     if (diff < 24 * 60 * 60 * 1000) {
       const hours = Math.floor(diff / (60 * 60 * 1000));
       return `${hours}h ago`;
     }
     
-    // Less than a week
     if (diff < 7 * 24 * 60 * 60 * 1000) {
       const days = Math.floor(diff / (24 * 60 * 60 * 1000));
       return `${days}d ago`;
     }
     
-    // Default to date format
     return notification.timestamp.toLocaleDateString();
   };
   
