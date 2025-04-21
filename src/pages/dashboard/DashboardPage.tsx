@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { 
   Bell, 
   Search, 
@@ -24,7 +25,12 @@ import {
   TooltipTrigger 
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+} from "@/components/ui/sheet";
 import AppHeader from "@/components/layout/AppHeader";
+import ChatPanel from "@/components/chat/ChatPanel";
 
 export type Deal = {
   id: string;
@@ -42,13 +48,22 @@ export type Alert = {
   severity: "high" | "medium" | "low";
 };
 
-const navigationButtons = [
-  {
+type NavButton = {
+  id: string;
+  label: string;
+  icon: React.ComponentType<any>;
+  tooltip: string;
+  hasBadge?: boolean;
+  isActive?: boolean;
+};
+
+const navigationButtons: NavButton[] = [
+  { 
     id: "agenda",
     label: "Agenda",
     icon: Calendar,
     tooltip: "Scheduler of tasks integrated with your work and team agenda, with agentic and delegation functionalities",
-    hasBadge: true,
+    hasBadge: true
   },
   {
     id: "dashboard",
@@ -56,42 +71,42 @@ const navigationButtons = [
     icon: LayoutGrid,
     tooltip: "Review your portfolio of transactions, monitor covenants, upload documentation, interact with participants, and access transactional apps",
     hasBadge: false,
-    isActive: true,
+    isActive: true
   },
   {
     id: "chats",
     label: "Nítido Chats",
     icon: MessageSquare,
     tooltip: "Review open and historical conversations, interact with your team, and get continuous AI assistance with summaries, actions, and autonomous participation",
-    hasBadge: false,
+    hasBadge: false
   },
   {
     id: "assistant",
     label: "Nítido AI Assistant",
     icon: Bot, // Changed from Robot to Bot here
     tooltip: "Access all AI assistant chats, searchable by topic/deal/date, and configure the assistant's capabilities, limitations, and autonomy",
-    hasBadge: false,
+    hasBadge: false
   },
   {
     id: "agents",
     label: "Nítido AI Agents",
     icon: Network,
     tooltip: "Generate agentic tasks, review pending supervision actions, and link AI agents with your team",
-    hasBadge: false,
+    hasBadge: false
   },
   {
     id: "setup",
     label: "Setup",
     icon: Settings,
     tooltip: "Configure platform settings, optimize AI capabilities, manage users and guidelines, language preferences, and operational restrictions",
-    hasBadge: false,
+    hasBadge: false
   },
 ];
 
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [deals, setDeals] = useState<Deal[]>([
     {
       id: "1",
@@ -172,6 +187,32 @@ const DashboardPage = () => {
     }
   };
 
+  // Handle welcome message display based on last visit
+  useEffect(() => {
+    const checkLastVisit = () => {
+      const lastVisit = localStorage.getItem('lastNitidinaVisit');
+      const today = new Date().toDateString();
+      
+      if (!lastVisit || lastVisit !== today) {
+        setShowWelcomeMessage(true);
+        localStorage.setItem('lastNitidinaVisit', today);
+      } else {
+        setShowWelcomeMessage(false);
+      }
+    };
+    
+    checkLastVisit();
+  }, []);
+
+  // Effect to handle sidebar collapse when chat is open
+  useEffect(() => {
+    if (isChatOpen) {
+      setSidebarCollapsed(true);
+    } else {
+      setSidebarCollapsed(false);
+    }
+  }, [isChatOpen]);
+
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* App Header */}
@@ -242,6 +283,13 @@ const DashboardPage = () => {
 
         {/* Alerts Panel */}
         <AlertsPanel alerts={alerts} />
+
+        {/* Chat Panel Drawer */}
+        <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
+          <SheetContent side="right" className="w-[420px] p-0 border-l">
+            <ChatPanel />
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );
