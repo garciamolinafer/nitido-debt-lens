@@ -1,20 +1,29 @@
-import { useNavigate } from "react-router-dom";
-import type { Deal } from "@/pages/dashboard/DashboardPage";
 
-type DealsTableProps = {
-  deals: Deal[];
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+export type Deal = {
+  id: string;
+  name: string;
+  borrower: string;
+  outstanding: string;
+  status: "normal" | "warning" | "alert";
 };
 
-const DealsTable = ({ deals }: DealsTableProps) => {
+interface DealsTableProps {
+  deals: Deal[];
+}
+
+const DealsTable: React.FC<DealsTableProps> = ({ deals }) => {
   const navigate = useNavigate();
 
   const getStatusIcon = (status: Deal['status']) => {
     if (status === 'alert') {
-      return <span className="h-3 w-3 bg-red-500 rounded-full"></span>;
+      return <div className="h-3 w-3 bg-red-500 rounded-full"></div>;
     } else if (status === 'warning') {
-      return <span className="h-3 w-3 bg-amber-500 rounded-full"></span>;
+      return <div className="h-3 w-3 bg-amber-500 rounded-full"></div>;
     } else {
-      return <span className="h-3 w-3 bg-gray-200 rounded-full"></span>;
+      return <div className="h-3 w-3 bg-emerald-500 rounded-full"></div>;
     }
   };
 

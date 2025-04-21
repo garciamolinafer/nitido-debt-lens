@@ -1,25 +1,32 @@
 
-import { AlertTriangle, FileText, Calendar } from "lucide-react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import type { Alert } from "@/pages/dashboard/DashboardPage";
 
-type AlertsPanelProps = {
-  alerts: Alert[];
+export type Alert = {
+  id: string;
+  type: "document" | "covenant" | "payment";
+  message: string;
+  severity: "high" | "medium" | "low";
+  dealId?: string;
 };
 
-const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
+interface AlertsPanelProps {
+  alerts: Alert[];
+}
+
+const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
   const navigate = useNavigate();
   
   const getAlertIcon = (type: Alert['type']) => {
     switch (type) {
       case 'document':
-        return <FileText className="h-5 w-5 text-blue-500" />;
+        return <div className="h-3 w-3 bg-blue-500 rounded-full"></div>;
       case 'covenant':
-        return <AlertTriangle className="h-5 w-5 text-red-500" />;
+        return <div className="h-3 w-3 bg-red-500 rounded-full"></div>;
       case 'payment':
-        return <Calendar className="h-5 w-5 text-amber-500" />;
+        return <div className="h-3 w-3 bg-amber-500 rounded-full"></div>;
       default:
-        return <AlertTriangle className="h-5 w-5" />;
+        return <div className="h-3 w-3 bg-gray-500 rounded-full"></div>;
     }
   };
 
@@ -38,22 +45,13 @@ const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
   
   const handleAlertClick = (alert: Alert) => {
     if (alert.dealId) {
-      if (alert.type === 'covenant') {
-        navigate(`/deals/${alert.dealId}/monitoring?tab=covenants`);
-      } else if (alert.type === 'document') {
-        navigate(`/deals/${alert.dealId}/monitoring?tab=documents`);
-      } else if (alert.type === 'payment') {
-        navigate(`/deals/${alert.dealId}/loan-admin`);
-      } else {
-        navigate(`/deals/${alert.dealId}`);
-      }
-      console.info(`Navigating to deal ${alert.dealId}`);
+      navigate(`/deals/${alert.dealId}`);
     }
   };
 
   return (
-    <div className="w-80 border-l border-gray-200 overflow-y-auto bg-gray-50 p-4">
-      <h2 className="text-lg font-bold mb-4">Alerts & Tasks</h2>
+    <div className="w-72 border-l border-gray-200 overflow-y-auto bg-gray-50 p-4">
+      <h2 className="text-lg font-bold mb-4">Alerts</h2>
       
       <div className="space-y-3">
         {alerts.map((alert) => (
@@ -62,7 +60,7 @@ const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
             className={`flex items-start p-3 rounded-md cursor-pointer transition-colors hover:bg-opacity-80 ${getBgColor(alert.severity)}`}
             onClick={() => handleAlertClick(alert)}
           >
-            <div className="mr-3 mt-0.5">
+            <div className="mr-3 mt-1">
               {getAlertIcon(alert.type)}
             </div>
             <div>
