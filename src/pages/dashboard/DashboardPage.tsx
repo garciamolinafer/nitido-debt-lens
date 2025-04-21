@@ -6,7 +6,7 @@ import {
   Calendar, 
   LayoutGrid, 
   MessageSquare, 
-  Robot, 
+  Bot, // Changed from Robot to Bot
   Network, 
   Settings,
 } from "lucide-react";
@@ -69,7 +69,7 @@ const navigationButtons = [
   {
     id: "assistant",
     label: "Nítido AI Assistant",
-    icon: Robot,
+    icon: Bot, // Changed from Robot to Bot here
     tooltip: "Access all AI assistant chats, searchable by topic/deal/date, and configure the assistant's capabilities, limitations, and autonomy",
     hasBadge: false,
   },
