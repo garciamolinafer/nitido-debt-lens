@@ -47,8 +47,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({
           <img
             src="/lovable-uploads/b4b2e44a-4e6f-498a-8358-ec4bdfa82440.png"
             alt="Nítido Logo"
-            className="h-8 w-auto"
-            style={{ imageRendering: "crisp-edges" }}
+            width={120}
+            height={32}
+            className="w-[120px] h-[32px]"
+            style={{ imageRendering: "pixelated" }}
           />
         </Button>
       </div>
