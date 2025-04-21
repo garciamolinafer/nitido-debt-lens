@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect, useRef } from "react";
 import { 
   Bell, 
   Search, 
@@ -41,6 +42,13 @@ export type Alert = {
   dealId?: string;
   severity: "high" | "medium" | "low";
 };
+
+// ⬇️ helper to remember previous value
+function usePrevious<T>(value:T) {
+  const ref = useRef<T | undefined>();
+  useEffect(() => { ref.current = value; });
+  return ref.current;
+}
 
 const navigationButtons = [
   {
@@ -151,12 +159,39 @@ const DashboardPage = () => {
       severity: "medium",
     }
   ]);
-
+  
   const agendaPending = alerts.some(a => a.type === "task");
+
+  const [nitidinaText, setNitidinaText] = useState("");
+  const [nitidinaHidden, setNitidinaHidden] = useState(false);
+  const [agendaPendingCount, setAgendaPendingCount] = useState(2); // ← mock # pending tasks
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // 〰️ Nitidina sentence builder
+  function buildNitidina(deals: Deal[], alerts: Alert[], tasks: number) {
+    const user = "Marina"; // TODO: pull from profile
+    const hotAlerts = alerts.filter(a => a.severity !== "low");
+    const hotDeals = [...new Set(hotAlerts.map(a => deals.find(d => d.id === a.dealId)?.name?.split(" ")[0]))]
+      .filter(Boolean).slice(0, 2).join(" and ");
+    return (
+      `Welcome back ${user}. ${tasks ? `I've reconciled your Outlook agenda and found ${tasks} pending item${tasks > 1 ? "s" : ""}. ` : ""}`
+      + (hotAlerts.length
+        ? `There ${hotAlerts.length > 1 ? "are" : "is"} ${hotAlerts.length} ongoing discussion${hotAlerts.length > 1 ? "s" : ""}${hotDeals ? ` on ${hotDeals}` : ""} requiring attention. `
+        : "Everything looks calm right now. ")
+      + "You can find recommended next steps in Nítido Chat."
+    );
+  }
+
+  // 🔄 recompute banner text and auto-show if changed
+  const prevMsg = usePrevious(nitidinaText);
+  useEffect(() => {
+    const msg = buildNitidina(deals, alerts, agendaPendingCount);
+    setNitidinaText(msg);
+    if (prevMsg && prevMsg !== msg) setNitidinaHidden(false); // unhide when new text arrives
+  }, [deals, alerts, agendaPendingCount, prevMsg]);
 
   const filteredDeals = deals.filter(deal =>
     deal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -219,8 +254,11 @@ const DashboardPage = () => {
         <div className="flex flex-col flex-1 overflow-hidden">
           <div className="flex-1 overflow-auto">
             <div className="p-6">
-              {showWelcomeMessage && (
-                <DashboardWelcomeAssistant onDismiss={() => setShowWelcomeMessage(false)} />
+              {showWelcomeMessage && !nitidinaHidden && (
+                <DashboardWelcomeAssistant 
+                  message={nitidinaText}
+                  onDismiss={() => setNitidinaHidden(true)} 
+                />
               )}
 
               <div className="flex justify-between items-center mb-6">
