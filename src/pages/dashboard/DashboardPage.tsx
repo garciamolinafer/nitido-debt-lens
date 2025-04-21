@@ -5,7 +5,7 @@ import {
   Calendar, 
   LayoutGrid, 
   MessageSquare, 
-  Bot, // Changed from Robot to Bot
+  Bot,
   Network, 
   Settings,
 } from "lucide-react";
@@ -36,7 +36,7 @@ export type Deal = {
 
 export type Alert = {
   id: string;
-  type: "document" | "covenant" | "payment";
+  type: "document" | "covenant" | "payment" | "task";  // Added "task" as valid type
   message: string;
   dealId?: string;
   severity: "high" | "medium" | "low";
@@ -68,7 +68,7 @@ const navigationButtons = [
   {
     id: "assistant",
     label: "Nítido AI Assistant",
-    icon: Bot, // Changed from Robot to Bot here
+    icon: Bot,
     tooltip: "Access all AI assistant chats, searchable by topic/deal/date, and configure the assistant's capabilities, limitations, and autonomy",
     hasBadge: false,
   },
@@ -144,7 +144,15 @@ const DashboardPage = () => {
       dealId: "2",
       severity: "low",
     },
+    {
+      id: "a4",
+      type: "task",
+      message: "Meeting preparation needed for quarterly review",
+      severity: "medium",
+    }
   ]);
+
+  const agendaPending = alerts.some(a => a.type === "task");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -174,12 +182,9 @@ const DashboardPage = () => {
 
   return (
     <div className="flex flex-col h-screen bg-white">
-      {/* App Header */}
       <AppHeader />
       
-      {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Navigation Sidebar */}
         <div className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-200 ${sidebarCollapsed ? 'w-16' : 'w-56'}`}>
           <div className="py-4 px-3 flex-1">
             <div className="flex flex-col space-y-4">
@@ -211,16 +216,13 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Main Dashboard Content */}
         <div className="flex flex-col flex-1 overflow-hidden">
           <div className="flex-1 overflow-auto">
             <div className="p-6">
-              {/* Welcome Assistant Banner */}
               {showWelcomeMessage && (
                 <DashboardWelcomeAssistant onDismiss={() => setShowWelcomeMessage(false)} />
               )}
 
-              {/* Dashboard Header */}
               <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">My Deals</h1>
                 <div className="relative w-64">
@@ -234,13 +236,11 @@ const DashboardPage = () => {
                 </div>
               </div>
 
-              {/* Deals Table */}
               <DealsTable deals={filteredDeals} />
             </div>
           </div>
         </div>
 
-        {/* Alerts Panel */}
         <AlertsPanel alerts={alerts} />
       </div>
     </div>
