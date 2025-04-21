@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Bell, 
@@ -175,6 +174,9 @@ const DashboardPage = () => {
 
   return (
     <div className="flex flex-col h-screen bg-white">
+      {/* App Header */}
+      <AppHeader />
+      
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Navigation Sidebar */}
