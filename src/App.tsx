@@ -1,9 +1,24 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useParams, Navigate, useLocation } from "react-router-dom";
 import { useState, createContext, useContext } from "react";
+import AIChatAssistantButton from "./components/ai/AIChatAssistantButton";
+import SiteFooter from "./components/layout/SiteFooter";
+import AppHeader from "./components/layout/AppHeader";
+import NotificationCenter from "./components/notifications/NotificationCenter";
+import AccessPage from "./pages/access/AccessPage";
+import Index from "./pages/Index";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import DealDetailPage from "./pages/deals/DealDetailPage";
+import DealLoanAdminPage from "./pages/deals/DealLoanAdminPage";
+import DealMonitoringPage from "./pages/deals/DealMonitoringPage";
+import DocumentIntelligencePage from "./pages/deals/DocumentIntelligencePage";
+import AIAgentDashboardPage from "./pages/ai/AIAgentDashboardPage";
+import IntegrationSettingsPage from "./pages/settings/IntegrationSettingsPage";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
