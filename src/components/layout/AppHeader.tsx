@@ -1,116 +1,141 @@
 
 import React, { useState } from "react";
-import { Settings, Globe, Bell, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Bell, Settings, LogOut, User, ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/App";
+import { useNavigate } from "react-router-dom";
 
-// You can adjust these as needed based on your languages supported
+// Language options
 const languages = [
-  { code: "en", name: "English" },
-  { code: "es", name: "Spanish" },
-  { code: "fr", name: "French" },
+  { code: "en", label: "English" },
+  { code: "es", label: "Español" },
 ];
 
-const managerName = "Marina Whitman";
-// Photo: young female in casual dress (close visual match)
-const managerImg =
-  "https://randomuser.me/api/portraits/women/44.jpg"; // good casual placeholder
+const AppHeader: React.FC = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
 
-interface AppHeaderProps {
-  onMenuToggle?: () => void;
-  onLogout: () => void;
-}
+  // Young female, casual dress from Unsplash
+  const managerImg =
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=facearea&w=64&h=64&facepad=3";
 
-const AppHeader: React.FC<AppHeaderProps> = ({
-  onMenuToggle,
-  onLogout,
-}) => {
-  const [currentLanguage, setCurrentLanguage] = useState(languages[0]);
+  const handleLogout = () => {
+    logout();
+    navigate("/access");
+  };
+
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLanguage(e.target.value);
+    // Additional language change logic would go here
+  };
 
   return (
-    <header className="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 z-40 relative shadow-sm">
-      {/* Left: Nítido Logo */}
-      <div className="flex items-center">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onMenuToggle}
-          className="mr-2"
-          aria-label="Menu"
-        >
-          <img
-            src="/lovable-uploads/b4b2e44a-4e6f-498a-8358-ec4bdfa82440.png"
-            alt="Nítido Logo"
-            width={120}
-            height={32}
-            className="w-[120px] h-[32px]"
-            style={{ imageRendering: "pixelated" }}
-          />
-        </Button>
+    <header className="h-16 flex items-center justify-between px-6 border-b border-gray-200 bg-white z-30 sticky top-0">
+      <div className="flex items-center gap-3">
+        <img
+          src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png"
+          alt="Nítido Logo"
+          className="h-7"
+        />
       </div>
-      {/* Right: Controls */}
-      <div className="flex items-center gap-2">
-        {/* Settings Wheel */}
-        <Button variant="ghost" size="icon" aria-label="Settings">
-          <Settings className="h-5 w-5" />
-        </Button>
-        {/* Language Selector */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Language">
-              <Globe className="h-5 w-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {languages.map((lang) => (
-              <DropdownMenuItem
-                key={lang.code}
-                onClick={() => setCurrentLanguage(lang)}
-                className={lang.code === currentLanguage.code ? "bg-gray-100" : ""}
+      <div className="flex items-center gap-6">
+        {/* Settings */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                aria-label="Setup"
+                className="hover:text-gray-900 text-gray-600"
+                title="Setup"
               >
-                {lang.name}
-              </DropdownMenuItem>
+                <Settings size={20} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Platform settings
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        {/* Language Selector */}
+        <div className="flex items-center gap-2">
+          <select
+            value={selectedLanguage}
+            onChange={handleLanguageChange}
+            className="border-none bg-transparent text-sm font-semibold cursor-pointer outline-none text-gray-700 py-1 pr-6 appearance-none"
+            aria-label="Language selector"
+            title="Language selector"
+            style={{ backgroundPosition: "right 0.25rem center", backgroundSize: "1em" }}
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code} className="text-black">
+                {lang.label}
+              </option>
             ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        {/* Manager name & photo dropdown */}
+          </select>
+        </div>
+        
+        {/* Manager Name & Avatar with dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="flex items-center gap-2 px-2 h-10 group"
-              aria-label="User menu"
-            >
-              <span className="font-medium whitespace-nowrap hidden md:block">
-                {managerName}
+            <div className="flex items-center gap-2 cursor-pointer select-none">
+              <span className="text-sm font-medium text-gray-800">
+                Marina Whitman
               </span>
-              <Avatar className="h-8 w-8 border border-gray-300">
-                <AvatarImage src={managerImg} alt={managerName} />
+              <Avatar className="h-8 w-8 border border-gray-200">
+                <AvatarImage src={managerImg} alt="Manager" />
                 <AvatarFallback>MW</AvatarFallback>
               </Avatar>
-              <ChevronDown className="h-4 w-4 ml-1 opacity-70 group-hover:opacity-100 hidden md:block" />
-            </Button>
+              <ChevronDown size={16} className="text-gray-500" />
+            </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Preferences</DropdownMenuItem>
-            <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => navigate("/profile")}>
+              <User className="mr-2 h-4 w-4" /> Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/settings")}>
+              <Settings className="mr-2 h-4 w-4" /> Preferences
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" /> Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        {/* Notifications bell */}
-        <Button variant="ghost" size="icon" aria-label="Notifications">
-          <Bell className="h-5 w-5" />
-        </Button>
+
+        {/* Notifications Icon */}
+        <div className="relative">
+          <button
+            aria-label="Notifications"
+            className="relative hover:text-gray-900 text-gray-600"
+            title="Notifications"
+          >
+            <Bell size={20} />
+            <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center">
+              3
+            </Badge>
+          </button>
+        </div>
       </div>
     </header>
   );
 };
 
 export default AppHeader;
-

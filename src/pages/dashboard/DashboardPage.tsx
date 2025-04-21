@@ -1,30 +1,98 @@
-
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
-import AppHeader from "@/components/layout/AppHeader";
-import Sidebar from "@/components/dashboard/Sidebar";
-import DashboardWelcomeAssistant from "@/components/dashboard/DashboardWelcomeAssistant";
-import DealsTable, { Deal } from "@/components/dashboard/DealsTable";
-import AlertsPanel from "@/components/dashboard/AlertsPanel";
-import ChatPanel from "@/components/dashboard/ChatPanel";
+import { useState } from "react";
+import { 
+  Bell, 
+  Search, 
+  Calendar, 
+  LayoutGrid, 
+  MessageSquare, 
+  Bot, // Changed from Robot to Bot
+  Network, 
+  Settings,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Sidebar from "@/components/dashboard/Sidebar";
+import DealsTable from "@/components/dashboard/DealsTable";
+import AlertsPanel from "@/components/dashboard/AlertsPanel";
+import DashboardWelcomeAssistant from "@/components/dashboard/DashboardWelcomeAssistant";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/App";
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipProvider, 
+  TooltipTrigger 
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import AppHeader from "@/components/layout/AppHeader";
 
-// Alert type moved here for clarity
-import type { Alert } from "@/components/dashboard/AlertsPanel";
+export type Deal = {
+  id: string;
+  name: string;
+  borrower: string;
+  outstanding: string;
+  status: "normal" | "warning" | "alert" | null;
+};
 
-const DashboardPage: React.FC = () => {
+export type Alert = {
+  id: string;
+  type: "document" | "covenant" | "payment";
+  message: string;
+  dealId?: string;
+  severity: "high" | "medium" | "low";
+};
+
+const navigationButtons = [
+  {
+    id: "agenda",
+    label: "Agenda",
+    icon: Calendar,
+    tooltip: "Scheduler of tasks integrated with your work and team agenda, with agentic and delegation functionalities",
+    hasBadge: true,
+  },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutGrid,
+    tooltip: "Review your portfolio of transactions, monitor covenants, upload documentation, interact with participants, and access transactional apps",
+    hasBadge: false,
+    isActive: true,
+  },
+  {
+    id: "chats",
+    label: "Nítido Chats",
+    icon: MessageSquare,
+    tooltip: "Review open and historical conversations, interact with your team, and get continuous AI assistance with summaries, actions, and autonomous participation",
+    hasBadge: false,
+  },
+  {
+    id: "assistant",
+    label: "Nítido AI Assistant",
+    icon: Bot, // Changed from Robot to Bot here
+    tooltip: "Access all AI assistant chats, searchable by topic/deal/date, and configure the assistant's capabilities, limitations, and autonomy",
+    hasBadge: false,
+  },
+  {
+    id: "agents",
+    label: "Nítido AI Agents",
+    icon: Network,
+    tooltip: "Generate agentic tasks, review pending supervision actions, and link AI agents with your team",
+    hasBadge: false,
+  },
+  {
+    id: "setup",
+    label: "Setup",
+    icon: Settings,
+    tooltip: "Configure platform settings, optimize AI capabilities, manage users and guidelines, language preferences, and operational restrictions",
+    hasBadge: false,
+  },
+];
+
+const DashboardPage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [showChatPanel, setShowChatPanel] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Sample deals data
-  const [deals] = useState<Deal[]>([
+  const [deals, setDeals] = useState<Deal[]>([
     {
       id: "1",
       name: "Apollo Energy Loan",
@@ -53,23 +121,14 @@ const DashboardPage: React.FC = () => {
       outstanding: "€65,000,000",
       status: "normal",
     },
-    {
-      id: "5",
-      name: "Abengoa Syndicated Loan",
-      borrower: "Abengoa SA",
-      outstanding: "€120,000,000",
-      status: "alert",
-    },
   ]);
 
-  // Sample alerts data
-  const [alerts] = useState<Alert[]>([
+  const [alerts, setAlerts] = useState<Alert[]>([
     {
       id: "a1",
       type: "document",
-      message: "3 documents need review for Beta Real Estate",
+      message: "3 documents need review",
       severity: "medium",
-      dealId: "2",
     },
     {
       id: "a2",
@@ -81,68 +140,87 @@ const DashboardPage: React.FC = () => {
     {
       id: "a3",
       type: "payment",
-      message: "Interest payment due tomorrow for Beta Real Estate",
+      message: "Interest payment due tomorrow for Beta Real Estate Facility",
       dealId: "2",
       severity: "low",
     },
-    {
-      id: "a4",
-      type: "document",
-      message: "Updated financial statements available for Outer Banks transaction",
-      dealId: "4",
-      severity: "medium",
-    },
   ]);
 
-  // Filter deals based on search term
-  const filteredDeals = deals.filter((deal) =>
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const filteredDeals = deals.filter(deal =>
     deal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     deal.borrower.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Handle logout
   const handleLogout = () => {
     logout();
     navigate("/access");
   };
 
-  // Toggle menu/sidebar
-  const handleMenuToggle = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
-  };
-
-  // Handle navigation button clicks
   const handleNavButtonClick = (id: string) => {
     if (id === "assistant") {
-      setShowChatPanel(true);
+      setIsChatOpen(!isChatOpen);
       setSidebarCollapsed(true);
     } else if (id === "dashboard") {
-      // Stay on dashboard
+      // Do nothing, already on dashboard
     } else {
+      // Navigate to other pages
       navigate(`/${id}`);
     }
   };
 
-  const welcomeMessage =
-    "I have reconciled your agenda from Outlook with the tasks extracted from your portfolio. Check the agenda and let me know how I can assist. There are various ongoing discussions that need your attention, particularly on the Abengoa and the Outer Banks transactions. I have prepared a summary with recommended actions and responses at the Nítido Chat.";
-
   return (
     <div className="flex flex-col h-screen bg-white">
-      <AppHeader onMenuToggle={handleMenuToggle} onLogout={handleLogout} />
+      {/* App Header */}
+      <AppHeader />
+      
+      {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar
-          collapsed={sidebarCollapsed || showChatPanel}
-          onNavClick={handleNavButtonClick}
-        />
-        <main className="flex flex-col flex-1 overflow-hidden">
+        {/* Navigation Sidebar */}
+        <div className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-200 ${sidebarCollapsed ? 'w-16' : 'w-56'}`}>
+          <div className="py-4 px-3 flex-1">
+            <div className="flex flex-col space-y-4">
+              <TooltipProvider>
+                {navigationButtons.map((button) => (
+                  <Tooltip key={button.id}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant={button.isActive ? "default" : "ghost"}
+                        className={`justify-start ${sidebarCollapsed ? 'justify-center px-0' : ''}`}
+                        onClick={() => handleNavButtonClick(button.id)}
+                      >
+                        <button.icon className={`${sidebarCollapsed ? 'mr-0' : 'mr-2'}`} size={20} />
+                        {!sidebarCollapsed && <span>{button.label}</span>}
+                        {button.hasBadge && (
+                          <Badge variant="destructive" className="ml-auto rounded-full h-5 w-5 p-0 flex items-center justify-center">
+                            2
+                          </Badge>
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" align="center" className="max-w-xs">
+                      {button.tooltip}
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </TooltipProvider>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Dashboard Content */}
+        <div className="flex flex-col flex-1 overflow-hidden">
           <div className="flex-1 overflow-auto">
             <div className="p-6">
+              {/* Welcome Assistant Banner */}
               {showWelcomeMessage && (
-                <DashboardWelcomeAssistant
-                  message={welcomeMessage}
-                  onDismiss={() => setShowWelcomeMessage(false)}
-                />
+                <DashboardWelcomeAssistant onDismiss={() => setShowWelcomeMessage(false)} />
               )}
+
+              {/* Dashboard Header */}
               <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">My Deals</h1>
                 <div className="relative w-64">
@@ -155,12 +233,15 @@ const DashboardPage: React.FC = () => {
                   />
                 </div>
               </div>
+
+              {/* Deals Table */}
               <DealsTable deals={filteredDeals} />
             </div>
           </div>
-        </main>
+        </div>
+
+        {/* Alerts Panel */}
         <AlertsPanel alerts={alerts} />
-        {showChatPanel && <ChatPanel onClose={() => setShowChatPanel(false)} />}
       </div>
     </div>
   );
