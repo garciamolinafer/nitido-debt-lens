@@ -59,15 +59,12 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = () => {
-    setIsAuthenticated(true);
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false);
-  };
+  const login = () => setIsAuthenticated(true);
+  const logout = () => setIsAuthenticated(false);
 
   const showHeader = window.location.pathname !== "/access";
+
+  const handleMenuToggle = () => {};
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -77,7 +74,7 @@ const App = () => {
           <Sonner />
           <div className="min-h-screen relative pb-16">
             <BrowserRouter>
-              {showHeader && <AppHeader />}
+              {showHeader && <AppHeader onMenuToggle={handleMenuToggle} onLogout={logout} />}
               {isAuthenticated && (
                 <div className="flex items-center justify-end gap-2 fixed top-4 right-4 z-50">
                   <NotificationCenter />
