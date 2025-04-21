@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,10 +17,10 @@ import AIChatAssistantButton from "./components/ai/AIChatAssistantButton";
 import NotificationCenter from "./components/notifications/NotificationCenter";
 import AccessPage from "./pages/access/AccessPage";
 import SiteFooter from "./components/layout/SiteFooter";
+import AppHeader from "@/components/layout/AppHeader";
 
 const queryClient = new QueryClient();
 
-// Create an authentication context to manage login state
 type AuthContextType = {
   isAuthenticated: boolean;
   login: () => void;
@@ -38,7 +37,6 @@ export const useAuth = () => {
   return context;
 };
 
-// Wrapper component to provide deal context to AIChatAssistantButton
 const DealPageWrapper = () => {
   const { dealId } = useParams();
   return (
@@ -48,7 +46,6 @@ const DealPageWrapper = () => {
   );
 };
 
-// Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   
@@ -70,6 +67,8 @@ const App = () => {
     setIsAuthenticated(false);
   };
 
+  const showHeader = window.location.pathname !== "/access";
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
@@ -78,6 +77,7 @@ const App = () => {
           <Sonner />
           <div className="min-h-screen relative pb-16">
             <BrowserRouter>
+              {showHeader && <AppHeader />}
               {isAuthenticated && (
                 <div className="flex items-center justify-end gap-2 fixed top-4 right-4 z-50">
                   <NotificationCenter />
@@ -125,7 +125,6 @@ const App = () => {
                     <IntegrationSettingsPage />
                   </ProtectedRoute>
                 } />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
               {isAuthenticated && <AIChatAssistantButton />}
@@ -139,4 +138,3 @@ const App = () => {
 };
 
 export default App;
-

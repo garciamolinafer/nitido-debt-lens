@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Bell, MessageSquare, ChevronDown, Search, Home, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,6 @@ export type Alert = {
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  // Sample data for prototype
   const [deals, setDeals] = useState<Deal[]>([
     {
       id: "1",
@@ -85,7 +83,6 @@ const DashboardPage = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter deals based on search term
   const filteredDeals = deals.filter(deal =>
     deal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     deal.borrower.toLowerCase().includes(searchTerm.toLowerCase())
@@ -98,65 +95,10 @@ const DashboardPage = () => {
 
   return (
     <div className="flex h-screen bg-white">
-      {/* Sidebar */}
       <Sidebar />
       
-      {/* Main Content Area */}
       <div className="flex flex-col flex-1">
-        {/* Top Navigation Bar */}
-        <header className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <img 
-              src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png" 
-              alt="Nítido Logo" 
-              className="h-6 cursor-pointer"
-              onClick={() => navigate("/")}
-            />
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="flex items-center gap-1"
-              onClick={() => navigate("/")}
-            >
-              <Home size={16} />
-              <span>Home</span>
-            </Button>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-            </Button>
-            
-            <Button variant="ghost" size="icon">
-              <MessageSquare size={20} />
-            </Button>
-            
-            <div className="flex items-center gap-2">
-              <div className="flex items-center cursor-pointer">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
-                  <span className="text-sm font-medium">JD</span>
-                </div>
-                <span className="text-sm mr-1">John Doe</span>
-                <ChevronDown size={16} />
-              </div>
-              
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="flex items-center gap-1 ml-2"
-                onClick={handleLogout}
-              >
-                <LogOut size={16} />
-                <span>Logout</span>
-              </Button>
-            </div>
-          </div>
-        </header>
-        
         <div className="flex flex-1 overflow-hidden">
-          {/* Main Deal Dashboard */}
           <div className="flex-1 overflow-auto p-6">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold">My Deals</h1>
@@ -172,11 +114,9 @@ const DashboardPage = () => {
               </div>
             </div>
             
-            {/* Deals Table */}
             <DealsTable deals={filteredDeals} />
           </div>
           
-          {/* Alerts Panel */}
           <AlertsPanel alerts={alerts} />
         </div>
       </div>
