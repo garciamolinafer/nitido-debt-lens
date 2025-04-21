@@ -17,6 +17,7 @@ import IntegrationSettingsPage from "./pages/settings/IntegrationSettingsPage";
 import AIChatAssistantButton from "./components/ai/AIChatAssistantButton";
 import NotificationCenter from "./components/notifications/NotificationCenter";
 import AccessPage from "./pages/access/AccessPage";
+import SiteFooter from "./components/layout/SiteFooter";
 
 const queryClient = new QueryClient();
 
@@ -60,11 +61,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
   const login = () => {
     setIsAuthenticated(true);
   };
-  
+
   const logout = () => {
     setIsAuthenticated(false);
   };
@@ -75,59 +76,62 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            {isAuthenticated && (
-              <div className="flex items-center justify-end gap-2 fixed top-4 right-4 z-50">
-                <NotificationCenter />
-              </div>
-            )}
-            <Routes>
-              <Route path="/access" element={<AccessPage />} />
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/deals/:dealId" element={
-                <ProtectedRoute>
-                  <DealDetailPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/deals/:dealId/loan-admin" element={
-                <ProtectedRoute>
-                  <DealLoanAdminPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/deals/:dealId/monitoring" element={
-                <ProtectedRoute>
-                  <DealMonitoringPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/deals/:dealId/documents" element={
-                <ProtectedRoute>
-                  <DocumentIntelligencePage />
-                </ProtectedRoute>
-              } />
-              <Route path="/ai/agent-dashboard" element={
-                <ProtectedRoute>
-                  <AIAgentDashboardPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/settings/integrations" element={
-                <ProtectedRoute>
-                  <IntegrationSettingsPage />
-                </ProtectedRoute>
-              } />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            {isAuthenticated && <AIChatAssistantButton />}
-          </BrowserRouter>
+          <div className="min-h-screen relative pb-16">
+            <BrowserRouter>
+              {isAuthenticated && (
+                <div className="flex items-center justify-end gap-2 fixed top-4 right-4 z-50">
+                  <NotificationCenter />
+                </div>
+              )}
+              <Routes>
+                <Route path="/access" element={<AccessPage />} />
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                } />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/deals/:dealId" element={
+                  <ProtectedRoute>
+                    <DealDetailPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/deals/:dealId/loan-admin" element={
+                  <ProtectedRoute>
+                    <DealLoanAdminPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/deals/:dealId/monitoring" element={
+                  <ProtectedRoute>
+                    <DealMonitoringPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/deals/:dealId/documents" element={
+                  <ProtectedRoute>
+                    <DocumentIntelligencePage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/ai/agent-dashboard" element={
+                  <ProtectedRoute>
+                    <AIAgentDashboardPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/settings/integrations" element={
+                  <ProtectedRoute>
+                    <IntegrationSettingsPage />
+                  </ProtectedRoute>
+                } />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              {isAuthenticated && <AIChatAssistantButton />}
+            </BrowserRouter>
+            <SiteFooter />
+          </div>
         </TooltipProvider>
       </AuthContext.Provider>
     </QueryClientProvider>
@@ -135,3 +139,4 @@ const App = () => {
 };
 
 export default App;
+
