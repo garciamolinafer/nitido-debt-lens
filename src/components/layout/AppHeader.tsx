@@ -48,7 +48,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
             src="/lovable-uploads/b4b2e44a-4e6f-498a-8358-ec4bdfa82440.png"
             alt="Nítido Logo"
             className="h-8 w-auto"
-            style={{ minWidth: 90 }}
+            style={{ imageRendering: "crisp-edges" }}
           />
         </Button>
       </div>
@@ -111,3 +111,4 @@ const AppHeader: React.FC<AppHeaderProps> = ({
 };
 
 export default AppHeader;
+
