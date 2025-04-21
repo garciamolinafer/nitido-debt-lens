@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Bell, MessageSquare, ChevronDown, Search, Home, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
+import DashboardWelcomeAssistant from "@/components/dashboard/DashboardWelcomeAssistant";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/App";
 
@@ -96,13 +98,13 @@ const DashboardPage = () => {
   return (
     <div className="flex h-screen bg-white">
       <Sidebar />
-      
       <div className="flex flex-col flex-1">
         <div className="flex flex-1 overflow-hidden">
           <div className="flex-1 overflow-auto p-6">
+            {/* Assistant welcome/header */}
+            <DashboardWelcomeAssistant />
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold">My Deals</h1>
-              
               <div className="relative w-64">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
@@ -113,10 +115,8 @@ const DashboardPage = () => {
                 />
               </div>
             </div>
-            
             <DealsTable deals={filteredDeals} />
           </div>
-          
           <AlertsPanel alerts={alerts} />
         </div>
       </div>
