@@ -1,30 +1,14 @@
-
-import { useState, useEffect, useRef } from "react";
-import { 
-  Bell, 
-  Search, 
-  Calendar, 
-  LayoutGrid, 
-  MessageSquare, 
-  Bot,
-  Network, 
-  Settings,
-} from "lucide-react";
+import { useState } from "react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import DashboardWelcomeAssistant from "@/components/dashboard/DashboardWelcomeAssistant";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/App";
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from "@/components/ui/tooltip";
-import { Badge } from "@/components/ui/badge";
+import { DashboardNavigation } from "@/components/dashboard/DashboardNavigation";
+import { useNitidina } from "@/hooks/useNitidina";
 import AppHeader from "@/components/layout/AppHeader";
 
 export type Deal = {
@@ -37,64 +21,11 @@ export type Deal = {
 
 export type Alert = {
   id: string;
-  type: "document" | "covenant" | "payment" | "task";  // Added "task" as valid type
+  type: "document" | "covenant" | "payment" | "task";
   message: string;
   dealId?: string;
   severity: "high" | "medium" | "low";
 };
-
-// ⬇️ helper to remember previous value
-function usePrevious<T>(value:T) {
-  const ref = useRef<T | undefined>();
-  useEffect(() => { ref.current = value; });
-  return ref.current;
-}
-
-const navigationButtons = [
-  {
-    id: "agenda",
-    label: "Agenda",
-    icon: Calendar,
-    tooltip: "Scheduler of tasks integrated with your work and team agenda, with agentic and delegation functionalities",
-    hasBadge: true,
-  },
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: LayoutGrid,
-    tooltip: "Review your portfolio of transactions, monitor covenants, upload documentation, interact with participants, and access transactional apps",
-    hasBadge: false,
-    isActive: true,
-  },
-  {
-    id: "chats",
-    label: "Nítido Chats",
-    icon: MessageSquare,
-    tooltip: "Review open and historical conversations, interact with your team, and get continuous AI assistance with summaries, actions, and autonomous participation",
-    hasBadge: false,
-  },
-  {
-    id: "assistant",
-    label: "Nítido AI Assistant",
-    icon: Bot,
-    tooltip: "Access all AI assistant chats, searchable by topic/deal/date, and configure the assistant's capabilities, limitations, and autonomy",
-    hasBadge: false,
-  },
-  {
-    id: "agents",
-    label: "Nítido AI Agents",
-    icon: Network,
-    tooltip: "Generate agentic tasks, review pending supervision actions, and link AI agents with your team",
-    hasBadge: false,
-  },
-  {
-    id: "setup",
-    label: "Setup",
-    icon: Settings,
-    tooltip: "Configure platform settings, optimize AI capabilities, manage users and guidelines, language preferences, and operational restrictions",
-    hasBadge: false,
-  },
-];
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -159,39 +90,15 @@ const DashboardPage = () => {
       severity: "medium",
     }
   ]);
-  
+
   const agendaPending = alerts.some(a => a.type === "task");
-
-  const [nitidinaText, setNitidinaText] = useState("");
-  const [nitidinaHidden, setNitidinaHidden] = useState(false);
-  const [agendaPendingCount, setAgendaPendingCount] = useState(2); // ← mock # pending tasks
-
+  const [agendaPendingCount, setAgendaPendingCount] = useState(2);
   const [searchTerm, setSearchTerm] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // 〰️ Nitidina sentence builder
-  function buildNitidina(deals: Deal[], alerts: Alert[], tasks: number) {
-    const user = "Marina"; // TODO: pull from profile
-    const hotAlerts = alerts.filter(a => a.severity !== "low");
-    const hotDeals = [...new Set(hotAlerts.map(a => deals.find(d => d.id === a.dealId)?.name?.split(" ")[0]))]
-      .filter(Boolean).slice(0, 2).join(" and ");
-    return (
-      `Welcome back ${user}. ${tasks ? `I've reconciled your Outlook agenda and found ${tasks} pending item${tasks > 1 ? "s" : ""}. ` : ""}`
-      + (hotAlerts.length
-        ? `There ${hotAlerts.length > 1 ? "are" : "is"} ${hotAlerts.length} ongoing discussion${hotAlerts.length > 1 ? "s" : ""}${hotDeals ? ` on ${hotDeals}` : ""} requiring attention. `
-        : "Everything looks calm right now. ")
-      + "You can find recommended next steps in Nítido Chat."
-    );
-  }
-
-  // 🔄 recompute banner text and auto-show if changed
-  const prevMsg = usePrevious(nitidinaText);
-  useEffect(() => {
-    const msg = buildNitidina(deals, alerts, agendaPendingCount);
-    setNitidinaText(msg);
-    if (prevMsg && prevMsg !== msg) setNitidinaHidden(false); // unhide when new text arrives
-  }, [deals, alerts, agendaPendingCount, prevMsg]);
+  const { text: nitidinaText, isHidden: nitidinaHidden, setIsHidden: setNitidinaHidden } = 
+    useNitidina(deals, alerts, agendaPendingCount);
 
   const filteredDeals = deals.filter(deal =>
     deal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -221,34 +128,10 @@ const DashboardPage = () => {
       
       <div className="flex flex-1 overflow-hidden">
         <div className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-200 ${sidebarCollapsed ? 'w-16' : 'w-56'}`}>
-          <div className="py-4 px-3 flex-1">
-            <div className="flex flex-col space-y-4">
-              <TooltipProvider>
-                {navigationButtons.map((button) => (
-                  <Tooltip key={button.id}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant={button.isActive ? "default" : "ghost"}
-                        className={`justify-start ${sidebarCollapsed ? 'justify-center px-0' : ''}`}
-                        onClick={() => handleNavButtonClick(button.id)}
-                      >
-                        <button.icon className={`${sidebarCollapsed ? 'mr-0' : 'mr-2'}`} size={20} />
-                        {!sidebarCollapsed && <span>{button.label}</span>}
-                        {button.hasBadge && (
-                          <Badge variant="destructive" className="ml-auto rounded-full h-5 w-5 p-0 flex items-center justify-center">
-                            2
-                          </Badge>
-                        )}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" align="center" className="max-w-xs">
-                      {button.tooltip}
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </TooltipProvider>
-            </div>
-          </div>
+          <DashboardNavigation 
+            agendaPending={agendaPendingCount}
+            onNavigate={handleNavButtonClick}
+          />
         </div>
 
         <div className="flex flex-col flex-1 overflow-hidden">
