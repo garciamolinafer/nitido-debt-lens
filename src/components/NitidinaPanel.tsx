@@ -1,8 +1,8 @@
 
 import { useState, useEffect, useRef } from "react";
-import { X, Glasses } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type MessageType = {
   sender: "user" | "nitidina";
@@ -29,6 +29,9 @@ interface NitidinaPanelProps {
   isOpen: boolean;
   onToggle: () => void;
 }
+
+const NITIDINA_AVATAR_IMG = "/lovable-uploads/8e1f1c48-bd1c-47d6-b0dd-7682f9789473.png";
+const NITIDINA_AVATAR_ALT = "Nitidina Assistant Avatar";
 
 const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -99,11 +102,13 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
           aria-label="Open Nitidina"
         >
           <Avatar className="h-9 w-9 bg-yellow-200 flex items-center justify-center">
+            <AvatarImage
+              className="object-cover"
+              src={NITIDINA_AVATAR_IMG}
+              alt={NITIDINA_AVATAR_ALT}
+            />
             <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
-              {/* Simulate a young girl with glasses and ponytail: MW initials, glasses icon */}
-              <span className="text-xs">MW</span>
-              <Glasses className="absolute left-1/2 -translate-x-1/2 bottom-0 text-pink-600 w-4 h-4" />
-              {/* (No ponytail icon in lucide, using color and initials for a hint) */}
+              MW
             </AvatarFallback>
           </Avatar>
         </button>
@@ -117,9 +122,13 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
         <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
+              <AvatarImage
+                className="object-cover"
+                src={NITIDINA_AVATAR_IMG}
+                alt={NITIDINA_AVATAR_ALT}
+              />
               <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
-                <span className="text-xs">MW</span>
-                <Glasses className="absolute left-1/2 -translate-x-1/2 bottom-0 text-pink-600 w-4 h-4" />
+                MW
               </AvatarFallback>
             </Avatar>
             <h3 className="font-medium">Nitidina</h3>
@@ -184,3 +193,4 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
 };
 
 export default NitidinaPanel;
+
