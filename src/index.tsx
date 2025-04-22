@@ -86,10 +86,10 @@ function IndexPage() {
 
   // ---------- JSX ----------
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white">
       <AppHeader />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden mb-16"> {/* Added margin bottom to prevent footer overlap */}
         <div className="flex flex-col flex-1 p-6 overflow-auto">
           <Card className="mb-6 p-4 border border-gray-200 shadow-sm bg-gray-50 whitespace-pre-line">
             <div className="flex">

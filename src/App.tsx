@@ -90,7 +90,7 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <div className="min-h-screen relative pb-16">
+          <div className="min-h-screen pb-20"> {/* Increased padding bottom to prevent footer overlap */}
             <BrowserRouter>
               <ShowHeaderWrapper>
                 {isAuthenticated && (
