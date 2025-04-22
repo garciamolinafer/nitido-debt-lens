@@ -1,185 +1,157 @@
 
-import { useState, useEffect, useRef } from "react";
-import { X, Send } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Bot, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/App";
 
-type MessageType = {
-  sender: "user" | "nitidina";
-  text: string;
-};
-
-const getInitialNitidinaGreeting = async (): Promise<string> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const hour = new Date().getHours();
-      let greeting = "Hello";
-      
-      if (hour < 12) greeting = "Good morning";
-      else if (hour < 18) greeting = "Good afternoon";
-      else greeting = "Good evening";
-      
-      resolve(`${greeting} Marina! How can I assist you with your portfolio management today?`);
-    }, 800);
-  });
-};
-
-interface NitidinaPanelProps {
-  isOpen: boolean;
-  onToggle: () => void;
+/**
+ * Very small mock helpers – in a real back‑end you would pull data from
+ * Outlook / Firestore / etc.  We hard‑code a few examples so the prototype
+ * *looks* smart.
+ */
+function fakeFetchAgendaSummary(name: string) {
+  return {
+    pending: 4,
+    topDeals: ["Abengoa", "Outer Banks"],
+    summary:
+      "I have reconciled your agenda from Outlook with the tasks extracted from your portfolio.",
+  };
 }
 
-const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
-  const [messages, setMessages] = useState<MessageType[]>([]);
-  const [inputValue, setInputValue] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+function buildMorningGreeting(name: string) {
+  const { pending, topDeals, summary } = fakeFetchAgendaSummary(name);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  return [
+    `Welcome back ${name}. We have a busy day ahead.`,
+    summary,
+    `Check the agenda and let me know how I can assist – you have ` +
+      `${pending} time‑sensitive items.`,
+    `There are various ongoing discussions that need your attention, ` +
+      `particularly on the ${topDeals.join(" and ")} transactions.`,
+    `I have prepared a summary with recommended actions and responses ` +
+      `inside the Nítido Chats panel.`,
+  ].join("\n\n");
+}
 
+export type ChatMsg = { sender: "user" | "nitidina"; text: string };
+
+export default function NitidinaPanel({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  const { currentUser } = useAuth(); // assumes name at currentUser.displayName
+  const username = currentUser?.displayName || "User";
+
+  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const [input, setInput] = useState("");
+  const endRef = useRef<HTMLDivElement | null>(null);
+
+  /* === once on mount / open → push contextual greeting === */
   useEffect(() => {
     if (isOpen) {
-      if (messages.length === 0) {
-        getInitialNitidinaGreeting().then((greeting) => {
-          setMessages([{ sender: "nitidina", text: greeting }]);
-        });
-      }
-      
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 300);
-    }
-  }, [isOpen, messages.length]);
+      const hour = new Date().getHours();
+      const alreadyGreeted = messages.some((m) => m.sender === "nitidina");
+      if (alreadyGreeted) return;
 
+      const greeting =
+        hour < 12
+          ? buildMorningGreeting(username)
+          : `Hello ${username}. Let me know what you need.`;
+      setMessages((prev) => [...prev, { sender: "nitidina", text: greeting }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+
+  /* scroll to latest */
   useEffect(() => {
-    scrollToBottom();
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSendMessage = () => {
-    if (!inputValue.trim()) return;
+  const send = () => {
+    if (!input.trim()) return;
+    setMessages((prev) => [...prev, { sender: "user", text: input.trim() }]);
 
-    const newMessage: MessageType = {
-      sender: "user",
-      text: inputValue.trim(),
-    };
-    
-    setMessages((prev) => [...prev, newMessage]);
-    setInputValue("");
-
+    // ↳ fake AI echo
     setTimeout(() => {
-      const nitidinaResponse: MessageType = {
-        sender: "nitidina",
-        text: "👍 Got it! Let me work on that...",
-      };
-      setMessages((prev) => [...prev, nitidinaResponse]);
-    }, 1000);
-  };
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "nitidina",
+          text: "👍 Got it! I'll queue that and circle back shortly.",
+        },
+      ]);
+    }, 700);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
+    setInput("");
   };
 
   return (
     <>
+      {/* floating icon when closed */}
       {!isOpen && (
         <button
-          onClick={onToggle}
-          className="fixed top-20 right-6 z-50 flex items-center justify-center rounded-full shadow-lg transition-all hover:scale-105"
-          aria-label="Open Nitidina Assistant"
+          aria-label="Open Nitidina"
+          className="fixed bottom-6 right-6 z-40 rounded-full p-3 shadow-lg bg-black text-white"
+          onClick={() => {
+            /* hand off to parent – parent toggles isOpen */
+            onClose(); // but we expect parent to invert the state
+          }}
         >
-          <Avatar className="h-12 w-12 border-2 border-primary/50">
-            <AvatarImage 
-              src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png" 
-              alt="Nitidina Assistant" 
-              className="object-cover"
-            />
-            <AvatarFallback>NI</AvatarFallback>
-          </Avatar>
+          <Bot size={20} />
         </button>
       )}
 
-      <aside
-        className={cn(
-          "fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300",
-          "w-full sm:w-80 md:w-96",
-          isOpen ? "translate-x-0" : "translate-x-full"
-        )}
-      >
-        <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage 
-                src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png" 
-                alt="Nitidina Assistant" 
-                className="object-cover object-top"
-              />
-              <AvatarFallback>NI</AvatarFallback>
-            </Avatar>
-            <h3 className="font-medium">Nitidina Assistant</h3>
-          </div>
-          <button 
-            onClick={onToggle} 
-            className="rounded p-1 text-gray-500 hover:bg-gray-200"
-            aria-label="Close Nitidina Panel"
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={cn(
-                "flex",
-                message.sender === "user" ? "justify-end" : "justify-start"
-              )}
-            >
-              <div
-                className={cn(
-                  "max-w-[80%] rounded-lg px-4 py-2",
-                  message.sender === "user"
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-800"
-                )}
-              >
-                {message.text}
-              </div>
+      {/* panel */}
+      {isOpen && (
+        <div className="fixed inset-y-0 right-0 w-full sm:w-80 bg-white border-l border-gray-200 shadow-xl flex flex-col z-40">
+          <div className="flex items-center justify-between p-3 border-b">
+            <div className="flex items-center gap-2 font-medium">
+              <Bot size={18} />
+              Nitidina
             </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-
-        <div className="border-t p-4">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              ref={inputRef}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
-              className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-primary focus:outline-none"
-            />
             <Button
-              size="sm"
-              onClick={handleSendMessage}
-              className="rounded-md px-3"
-              disabled={!inputValue.trim()}
+              variant="ghost"
+              size="icon"
+              aria-label="Close"
+              onClick={onClose}
             >
-              <Send size={18} />
+              <X size={18} />
             </Button>
           </div>
+
+          {/* messages */}
+          <div className="flex-1 overflow-y-auto space-y-4 p-4 text-sm whitespace-pre-line leading-relaxed">
+            {messages.map((m, i) => (
+              <div
+                key={i}
+                className={
+                  m.sender === "user"
+                    ? "text-right"
+                    : "text-left italic text-gray-800"
+                }
+              >
+                {m.text}
+              </div>
+            ))}
+            <div ref={endRef} />
+          </div>
+
+          {/* input */}
+          <div className="p-3 border-t flex gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type a request..."
+              onKeyDown={(e) => e.key === "Enter" && send()}
+            />
+            <Button onClick={send}>Send</Button>
+          </div>
         </div>
-      </aside>
+      )}
     </>
   );
-};
-
-export default NitidinaPanel;
+}
