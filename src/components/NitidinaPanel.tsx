@@ -1,7 +1,8 @@
+
 import { useState, useEffect, useRef } from "react";
-import { Bot, X, Send } from "lucide-react";
+import { X, Glasses } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 type MessageType = {
   sender: "user" | "nitidina";
@@ -90,32 +91,38 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
 
   return (
     <>
-      {/* Collapsed state - floating icon */}
+      {/* Collapsed state - floating avatar button */}
       {!isOpen && (
         <button
           onClick={onToggle}
           className="fixed top-20 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all"
-          aria-label="Open Nitidina Assistant"
+          aria-label="Open Nitidina"
         >
-          <Bot size={24} />
+          <Avatar className="h-9 w-9 bg-yellow-200 flex items-center justify-center">
+            <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
+              {/* Simulate a young girl with glasses and ponytail: MW initials, glasses icon */}
+              <span className="text-xs">MW</span>
+              <Glasses className="absolute left-1/2 -translate-x-1/2 bottom-0 text-pink-600 w-4 h-4" />
+              {/* (No ponytail icon in lucide, using color and initials for a hint) */}
+            </AvatarFallback>
+          </Avatar>
         </button>
       )}
 
       {/* Expanded state - panel */}
       <aside
-        className={cn(
-          "fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300",
-          "w-full sm:w-80 md:w-96",
-          isOpen ? "translate-x-0" : "translate-x-full"
-        )}
+        className={`fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
           <div className="flex items-center gap-2">
-            <div className="rounded-full bg-primary/10 p-1">
-              <Bot size={20} className="text-primary" />
-            </div>
-            <h3 className="font-medium">Nitidina Assistant</h3>
+            <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
+              <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
+                <span className="text-xs">MW</span>
+                <Glasses className="absolute left-1/2 -translate-x-1/2 bottom-0 text-pink-600 w-4 h-4" />
+              </AvatarFallback>
+            </Avatar>
+            <h3 className="font-medium">Nitidina</h3>
           </div>
           <button 
             onClick={onToggle} 
@@ -131,18 +138,16 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={cn(
-                "flex",
-                message.sender === "user" ? "justify-end" : "justify-start"
-              )}
+              className={
+                message.sender === "user" ? "flex justify-end" : "flex justify-start"
+              }
             >
               <div
-                className={cn(
-                  "max-w-[80%] rounded-lg px-4 py-2",
+                className={
                   message.sender === "user"
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-800"
-                )}
+                    ? "max-w-[80%] rounded-lg px-4 py-2 bg-primary text-white"
+                    : "max-w-[80%] rounded-lg px-4 py-2 bg-yellow-100 text-gray-900"
+                }
               >
                 {message.text}
               </div>
@@ -169,7 +174,7 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
               className="rounded-md px-3"
               disabled={!inputValue.trim()}
             >
-              <Send size={18} />
+              Send
             </Button>
           </div>
         </div>
