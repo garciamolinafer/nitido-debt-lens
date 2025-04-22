@@ -42,7 +42,7 @@ const DealPageWrapper = () => {
   const { dealId } = useParams();
   return (
     <>
-      <AIChatAssistantButton context={{ dealId }} />
+      {/* AIChatAssistantButton has been removed */}
     </>
   );
 };
