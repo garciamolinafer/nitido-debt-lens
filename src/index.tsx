@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Calendar,
@@ -32,7 +33,7 @@ type NavItem = {
 };
 
 // ---------- Component ----------
-export default function IndexPage() {
+function IndexPage() {
   const auth = useAuth();
   
   // Get user name from auth context
@@ -44,7 +45,7 @@ export default function IndexPage() {
     {
       id: "agenda",
       label: "Agenda",
-      subtitle: "Scheduler integrated with Outlook / team calendars – agentic delegation enabled.",
+      subtitle: "Scheduler integrated with Outlook / team calendars – agentic delegation enabled.",
       Icon: Calendar,
       hasBadge: true
     },
@@ -56,19 +57,19 @@ export default function IndexPage() {
     },
     {
       id: "chats",
-      label: "Nítido Chats",
+      label: "Nítido Chats",
       subtitle: "Open & historic conversations, AI‑assisted summaries & suggested replies.",
       Icon: MessageSquare
     },
     {
       id: "assistant",
-      label: "Nítido AI Assistant",
+      label: "Nítido AI Assistant",
       subtitle: "Full ChatGPT‑style page. Searchable by topic, deal or date; configure autonomy.",
       Icon: Bot
     },
     {
       id: "agents",
-      label: "Nítido AI Agents",
+      label: "Nítido AI Agents",
       subtitle: "Generate agentic tasks, review pending approvals & link agents with teammates.",
       Icon: Network
     },
@@ -124,11 +125,12 @@ export default function IndexPage() {
         {/* Nitidina panel */}
         <ChatPanel
           open={chatOpen}
-          onClose={() => {}}
+          onClose={() => setChatOpen(false)}
           initialGreeting={greeting}
         />
       </div>
     </div>
   );
 }
+
 export default IndexPage;
