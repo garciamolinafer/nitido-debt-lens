@@ -58,16 +58,15 @@ const navTiles: NavTileData[] = [
 
 const Index = () => {
   const navigate = useNavigate();
-  const [isNitidinaOpen, setIsNitidinaOpen] = useState(false);
+  // For permanently open Nitidina, remove the local state variable
   const pendingAgenda = 2; // Dummy state for pending agenda items
 
   const handleTileClick = (id: string) => {
     navigate(`/${id}`);
   };
 
-  const toggleNitidinaPanel = () => {
-    setIsNitidinaOpen(!isNitidinaOpen);
-  };
+  // toggleNitidinaPanel is now a no-op because NitidinaPanel is always open
+  const toggleNitidinaPanel = () => {};
 
   return (
     <div className="container max-w-7xl mx-auto p-6 min-h-screen">
@@ -81,7 +80,7 @@ const Index = () => {
       <div
         className={cn(
           "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-300 ease-in-out",
-          isNitidinaOpen && "sm:w-2/3 opacity-75 hover:opacity-100"
+          // no more opacity changes based on panel open state
         )}
       >
         {navTiles.map((tile) => (
@@ -99,8 +98,8 @@ const Index = () => {
       </div>
 
       <NitidinaPanel 
-        isOpen={isNitidinaOpen} 
-        onToggle={toggleNitidinaPanel} 
+        isOpen={true}
+        onToggle={toggleNitidinaPanel}
       />
     </div>
   );

@@ -102,29 +102,10 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
 
   return (
     <>
-      {/* Collapsed state - floating avatar button */}
-      {!isOpen && (
-        <button
-          onClick={onToggle}
-          className="fixed top-20 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all"
-          aria-label="Open Nitidina"
-        >
-          <Avatar className="h-9 w-9 bg-yellow-200 flex items-center justify-center">
-            <AvatarImage
-              className="object-cover"
-              src={NITIDINA_AVATAR_IMG}
-              alt={NITIDINA_AVATAR_ALT}
-            />
-            <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
-              MW
-            </AvatarFallback>
-          </Avatar>
-        </button>
-      )}
+      {/* The panel will always be open, so don't render the floating avatar. */}
 
-      {/* Expanded state - panel */}
       <aside
-        className={`fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 translate-x-0`}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
@@ -139,19 +120,14 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
                 MW
               </AvatarFallback>
             </Avatar>
-            <h3 className="font-medium">Nitidina</h3>
+            <h3 className="font-medium text-base">Nitidina</h3>
           </div>
-          <button 
-            onClick={onToggle} 
-            className="rounded p-1 text-gray-500 hover:bg-gray-200"
-            aria-label="Close Nitidina Panel"
-          >
-            <X size={18} />
-          </button>
+          {/* Remove/disable close button so the panel is always open */}
+          <span className="w-5 h-5"></span>
         </div>
 
         {/* Messages container */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -162,9 +138,10 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
               <div
                 className={
                   message.sender === "user"
-                    ? "max-w-[80%] rounded-lg px-4 py-2 bg-primary text-white"
-                    : "max-w-[80%] rounded-lg px-4 py-2 bg-yellow-100 text-gray-900"
+                    ? "max-w-[80%] rounded-lg px-4 py-2 bg-primary text-white text-sm"
+                    : "max-w-[80%] rounded-lg px-4 py-2 bg-yellow-100 text-gray-900 text-sm"
                 }
+                style={{ wordBreak: "break-word" }}
               >
                 {message.text}
               </div>
@@ -174,7 +151,7 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
         </div>
 
         {/* Input area */}
-        <div className="border-t p-4">
+        <div className="border-t p-4 bg-white">
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -183,12 +160,13 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."
-              className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-primary focus:outline-none"
+              className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-xs focus:border-primary focus:outline-none"
+              style={{ fontSize: "13px" }}
             />
             <Button
               size="sm"
               onClick={handleSendMessage}
-              className="rounded-md px-3"
+              className="rounded-md px-3 text-xs"
               disabled={!inputValue.trim()}
             >
               Send
