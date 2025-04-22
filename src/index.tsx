@@ -9,6 +9,7 @@ import {
   Settings,
   Bell
 } from "lucide-react";
+import { Link } from "react-router-dom"; // Added for internal routing
 
 import AppHeader from "@/components/layout/AppHeader";
 import ChatPanel from "@/components/chat/ChatPanel";
@@ -18,10 +19,20 @@ import "@/index.css";
 import { useAuth } from "@/App";
 
 /* Helper: returns Nitidina's smart greeting */
-const getSmartGreeting = (name: string) =>
-  `Welcome back ${name}. We have a busy day ahead. I have reconciled your agenda from Outlook with the tasks extracted from your portfolio. Check the agenda and let me know how I can assist.
-
-There are various ongoing discussions that need your attention, particularly on the Abengoa and the Outer Banks transactions. I have prepared a summary with recommended actions and responses in the Nítido Chat.`;
+const getSmartGreeting = (name: string) => (
+  <>
+    Welcome back {name}. We have a busy day ahead.<br /><br />
+    I have reconciled your agenda from Outlook with the tasks extracted from your portfolio. Check the agenda{" "}
+    <Link to="/agenda" className="underline text-primary hover:text-primary/80">
+      here
+    </Link>
+    {" "}and let me know how can I assist.<br />
+    There are various ongoing discussions that need your attention, particularly on the Abengoa and the Outer Banks transactions. I have prepared a summary with recommended actions and responses at the Nítido Chat{" "}
+    <Link to="/chats" className="underline text-primary hover:text-primary/80">
+      here
+    </Link>.
+  </>
+);
 
 // ---------- Types ----------
 type NavItem = {
@@ -94,7 +105,7 @@ function IndexPage() {
           <Card className="mb-6 p-4 border border-gray-200 shadow-sm bg-gray-50 whitespace-pre-line">
             <div className="flex">
               <Bot className="w-6 h-6 mr-2 shrink-0" />
-              <p className="text-sm leading-relaxed">{greeting}</p>
+              <div className="text-sm leading-relaxed">{greeting}</div>
             </div>
           </Card>
 
@@ -126,7 +137,7 @@ function IndexPage() {
         <ChatPanel
           open={chatOpen}
           onClose={() => setChatOpen(false)}
-          initialGreeting={greeting}
+          initialGreeting={typeof greeting === "string" ? greeting : ""}
         />
       </div>
     </div>
