@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,32 +6,29 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 interface ChatPanelProps {
   open: boolean;
   onClose: () => void;
-  onOpen: () => void;
+  initialGreeting?: string;
 }
 
-type Message = {
-  sender: 'user' | 'nitidina';
+interface Message {
+  id: string;
+  sender: "user" | "ai";
   text: string;
-};
+}
 
 const NITIDINA_AVATAR_IMG = "/lovable-uploads/8e1f1c48-bd1c-47d6-b0dd-7682f9789473.png";
 const NITIDINA_AVATAR_ALT = "Nitidina Assistant Avatar";
 
-// Initial greeting based on time of day
-const getNitidinaGreeting = (): string => {
-  const h = new Date().getHours();
-  const part = h < 12 ? "morning" : h < 18 ? "afternoon" : "evening";
-
-  return `Good ${part}, Marina! 
-
-I have reconciled your Outlook agenda with the tasks extracted from your portfolio.
-Check the agenda and let me know how I can assist.
-
-⚡ There are ongoing discussions that need your attention, particularly on the Abengoa and Outer Banks transactions. I've prepared a summary with recommended actions and responses.`;
-};
-
-const ChatPanel: React.FC<ChatPanelProps> = ({ open, onClose, onOpen }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+export default function ChatPanel({
+  open,
+  onClose,
+  initialGreeting
+}: ChatPanelProps) {
+  // initialize with greeting if provided
+  const [messages, setMessages] = useState<Message[]>(() =>
+    initialGreeting
+      ? [{ id: "sys‑0", sender: "ai", text: initialGreeting }]
+      : []
+  );
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -43,17 +39,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ open, onClose, onOpen }) => {
 
   useEffect(() => {
     if (open) {
-      // If there are no messages yet, add the initial greeting
-      if (messages.length === 0) {
-        setMessages([{ sender: 'nitidina', text: getNitidinaGreeting() }]);
-      }
       
       // Focus input when panel opens
       setTimeout(() => {
         inputRef.current?.focus();
       }, 300);
     }
-  }, [open, messages.length]);
+  }, [open]);
 
   useEffect(() => {
     scrollToBottom();
@@ -64,6 +56,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ open, onClose, onOpen }) => {
 
     // Add user message
     const userMessage: Message = {
+      id: String(Date.now()),
       sender: 'user',
       text: inputValue.trim(),
     };
@@ -74,7 +67,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ open, onClose, onOpen }) => {
     // Simulate Nitidina's response
     setTimeout(() => {
       const nitidinaResponse: Message = {
-        sender: 'nitidina',
+        id: String(Date.now() + 1),
+        sender: 'ai',
         text: "I'm analyzing your request regarding the portfolio transactions. Would you like me to prepare a summary for the Abengoa deal, the Outer Banks transaction, or both?",
       };
       setMessages((prev) => [...prev, nitidinaResponse]);
@@ -91,23 +85,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ open, onClose, onOpen }) => {
   return (
     <>
       {/* Chat panel floating button when closed */}
-      {!open && (
-        <button
-          onClick={onOpen}
-          className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all"
-          aria-label="Open Nitidina Chat"
-        >
-          <Avatar className="h-9 w-9 bg-yellow-200 flex items-center justify-center">
-            <AvatarImage
-              src={NITIDINA_AVATAR_IMG}
-              alt={NITIDINA_AVATAR_ALT}
-            />
-            <AvatarFallback className="bg-yellow-200 text-primary font-bold">
-              N
-            </AvatarFallback>
-          </Avatar>
-        </button>
-      )}
+      
       
       {/* Full chat panel when open */}
       <div 
@@ -148,7 +126,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ open, onClose, onOpen }) => {
                 message.sender === "user" ? "flex justify-end" : "flex justify-start"
               }
             >
-              {message.sender === "nitidina" && (
+              {message.sender === "ai" && (
                 <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
                   <AvatarImage src={NITIDINA_AVATAR_IMG} alt={NITIDINA_AVATAR_ALT} />
                   <AvatarFallback className="bg-yellow-200 text-primary">N</AvatarFallback>
@@ -196,6 +174,4 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ open, onClose, onOpen }) => {
       </div>
     </>
   );
-};
-
-export default ChatPanel;
+}

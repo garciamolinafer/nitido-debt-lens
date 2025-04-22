@@ -14,6 +14,13 @@ import ChatPanel from "@/components/chat/ChatPanel";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import "@/index.css";                                     // tailwind base
+import { useAuth } from "@/App";      // already in project – used for username
+
+/* Helper: returns Nitidina’s smart greeting */
+const getSmartGreeting = (name: string) =>
+  `Welcome back ${name}. We have a busy day ahead. I have reconciled your agenda from Outlook with the tasks extracted from your portfolio. Check the agenda and let me know how I can assist.
+
+There are various ongoing discussions that need your attention, particularly on the Abengoa and the Outer Banks transactions. I have prepared a summary with recommended actions and responses in the Nítido Chat.`;
 
 // ---------- Types ----------
 type NavItem = {
@@ -25,29 +32,16 @@ type NavItem = {
 };
 
 // ---------- Smart Greeting ----------
-const getSmartGreeting = (firstName: string) => {
-  const h = new Date().getHours();
-  const part =
-    h < 12 ? "morning" : h < 18 ? "afternoon" : "evening";
-
-  return (
-    `Good ${part}, ${firstName}. ` +
-    "I have reconciled your Outlook agenda with the tasks extracted from your portfolio. " +
-    "Check the agenda and let me know how I can assist.\n\n" +
-    "⚡ There are ongoing discussions that need your attention, particularly on the Abengoa and Outer Banks transactions. " +
-    "I've prepared a summary with recommended actions and responses – open **Nítido Chat** when you're ready."
-  );
-};
-
-import { getSmartGreeting } from "@/utils/smartGreeting";   // helper that returns Marina’s personalised text
-
-const greeting = getSmartGreeting(user.firstName);   // will be "Welcome back Marina …"
+const greeting = "Welcome back Marina …";
 
 // ---------- Component ----------
 export default function IndexPage() {
   const [chatOpen, setChatOpen] = useState(false);
   const [greetingText, setGreetingText] = useState("");
   const user = { firstName: "Marina" };                   // 👉 replace with real user hook later
+  const { currentUser } = useAuth();          // may be null on first render
+  const userName = currentUser?.displayName?.split(" ")[0] || "User";
+  const greeting = getSmartGreeting(userName);
 
   useEffect(() => {
     setGreetingText(getSmartGreeting(user.firstName));
@@ -103,7 +97,6 @@ export default function IndexPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* main column */}
         <div className="flex flex-col flex-1 p-6 overflow-auto">
-
           {/* Nitidina helper banner */}
           {!chatOpen && (
             <Card className="mb-6 p-4 border border-gray-200 shadow-sm bg-gray-50 whitespace-pre-line">
@@ -116,7 +109,6 @@ export default function IndexPage() {
 
           {/* navigation grid OR mini‑bar */}
           {chatOpen ? (
-            /* collapsed icon strip */
             <div className="flex space-x-2 mb-4">
               {navItems.map(({ id, Icon, hasBadge }) => (
                 <Button
@@ -133,7 +125,6 @@ export default function IndexPage() {
               ))}
             </div>
           ) : (
-            /* full tile grid */
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {navItems.map(({ id, label, subtitle, Icon, hasBadge }) => (
                 <Card
