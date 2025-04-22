@@ -1,11 +1,9 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useParams, Navigate, useLocation } from "react-router-dom";
 import { useState, createContext, useContext } from "react";
-import AIChatAssistantButton from "@/components/ai/AIChatAssistantButton";
 import AppHeader from "@/components/layout/AppHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
@@ -142,7 +140,6 @@ const App = () => {
                   } />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-                {isAuthenticated && <AIChatAssistantButton />}
               </ShowHeaderWrapper>
             </BrowserRouter>
             <SiteFooter />
