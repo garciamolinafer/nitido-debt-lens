@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Calendar,
   LayoutGrid,
@@ -34,10 +34,10 @@ type NavItem = {
 // ---------- Component ----------
 export default function IndexPage() {
   const [chatOpen, setChatOpen] = useState(false);
-  const [greetingText, setGreetingText] = useState("");
-  const user = { firstName: "Marina" };                   // 👉 replace with real user hook later
   const auth = useAuth();
-  // Use isAuthenticated as a fallback check before accessing user information
+  
+  // Get user name from auth context
+  const user = { firstName: "Marina" };  // Hardcoded for now
   const userName = auth.isAuthenticated ? (user.firstName || "User") : "User";
   const greeting = getSmartGreeting(userName);
 
