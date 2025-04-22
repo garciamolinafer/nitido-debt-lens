@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Calendar,
@@ -33,7 +34,6 @@ type NavItem = {
 
 // ---------- Component ----------
 export default function IndexPage() {
-  const [chatOpen, setChatOpen] = useState(false);
   const auth = useAuth();
   
   // Get user name from auth context
@@ -92,65 +92,46 @@ export default function IndexPage() {
         {/* main column */}
         <div className="flex flex-col flex-1 p-6 overflow-auto">
           {/* Nitidina helper banner */}
-          {!chatOpen && (
-            <Card className="mb-6 p-4 border border-gray-200 shadow-sm bg-gray-50 whitespace-pre-line">
-              <div className="flex">
-                <Bot className="w-6 h-6 mr-2 shrink-0" />
-                <p className="text-sm leading-relaxed">{greeting}</p>
-              </div>
-            </Card>
-          )}
+          <Card className="mb-6 p-4 border border-gray-200 shadow-sm bg-gray-50 whitespace-pre-line">
+            <div className="flex">
+              <Bot className="w-6 h-6 mr-2 shrink-0" />
+              <p className="text-sm leading-relaxed">{greeting}</p>
+            </div>
+          </Card>
 
-          {/* navigation grid OR mini‑bar */}
-          {chatOpen ? (
-            <div className="flex space-x-2 mb-4">
-              {navItems.map(({ id, Icon, hasBadge }) => (
-                <Button
-                  key={id}
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => console.log("navigate ->", id)}
-                >
-                  <Icon className="w-5 h-5" />
-                  {hasBadge && (
-                    <Bell className="w-3 h-3 text-red-600 absolute top-1 right-1" />
-                  )}
-                </Button>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {navItems.map(({ id, label, subtitle, Icon, hasBadge }) => (
-                <Card
-                  key={id}
-                  className="p-6 cursor-pointer hover:shadow-md transition"
-                  onClick={() => console.log("navigate ->", id)}
-                >
-                  <div className="flex items-start">
-                    <Icon className="w-6 h-6 mr-3" />
-                    <div className="flex-1">
-                      <h2 className="text-lg font-bold mb-1 flex items-center">
-                        {label}
-                        {hasBadge && (
-                          <Bell className="w-4 h-4 text-red-600 ml-2" />
-                        )}
-                      </h2>
-                      <p className="text-sm text-gray-600">{subtitle}</p>
-                    </div>
+          {/* navigation grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {navItems.map(({ id, label, subtitle, Icon, hasBadge }) => (
+              <Card
+                key={id}
+                className="p-6 cursor-pointer hover:shadow-md transition"
+                onClick={() => console.log("navigate ->", id)}
+              >
+                <div className="flex items-start">
+                  <Icon className="w-6 h-6 mr-3" />
+                  <div className="flex-1">
+                    <h2 className="text-lg font-bold mb-1 flex items-center">
+                      {label}
+                      {hasBadge && (
+                        <Bell className="w-4 h-4 text-red-600 ml-2" />
+                      )}
+                    </h2>
+                    <p className="text-sm text-gray-600">{subtitle}</p>
                   </div>
-                </Card>
-              ))}
-            </div>
-          )}
+                </div>
+              </Card>
+            ))}
+          </div>
         </div>
 
-        {/* persistent chat panel (slides in/out) */}
+        {/* Nitidina chat panel is always visible */}
         <ChatPanel
-          open={chatOpen}
-          onClose={() => setChatOpen(false)}
+          open={true}
+          onClose={() => {}}
           initialGreeting={greeting}
         />
       </div>
     </div>
   );
 }
+
