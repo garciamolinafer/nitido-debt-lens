@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -90,14 +89,14 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
       {!isOpen && (
         <button
           onClick={onToggle}
-          className="fixed top-4 right-4 z-50 flex items-center justify-center rounded-full shadow-lg transition-all hover:scale-105"
+          className="fixed top-20 right-6 z-50 flex items-center justify-center rounded-full shadow-lg transition-all hover:scale-105"
           aria-label="Open Nitidina Assistant"
         >
-          <Avatar className="h-16 w-16 border-2 border-primary/50">
+          <Avatar className="h-12 w-12 border-2 border-primary/50">
             <AvatarImage 
               src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png" 
               alt="Nitidina Assistant" 
-              className="object-cover object-top"
+              className="object-cover"
             />
             <AvatarFallback>NI</AvatarFallback>
           </Avatar>
