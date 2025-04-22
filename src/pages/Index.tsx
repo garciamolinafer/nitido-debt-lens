@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, LayoutGrid, MessageSquare, Bot, Network, Settings } from "lucide-react";
@@ -65,6 +66,13 @@ const Index = () => {
   return (
     <div className="container max-w-7xl mx-auto p-6 min-h-screen">
       <header className="mb-12 text-center">
+        <div className="flex items-center justify-center mb-4">
+          <img
+            src="/lovable-uploads/photo-1581091226825-a6a2a5aee158"
+            alt="Nitidina Assistant"
+            className="w-12 h-12 rounded-full object-cover object-top border-2 border-primary/20"
+          />
+        </div>
         <h1 className="text-4xl font-bold mb-4">Nítido Command Center</h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           AI-powered loan management platform for syndicated lending portfolios
