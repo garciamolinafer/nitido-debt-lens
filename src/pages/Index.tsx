@@ -1,6 +1,9 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Calendar, LayoutGrid, MessageSquare, Bot, Network, Settings } from "lucide-react";
 import { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import NavTile from "@/components/NavTile";
 import NitidinaPanel from "@/components/NitidinaPanel";
