@@ -1,12 +1,15 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useParams, Navigate, useLocation } from "react-router-dom";
 import { useState, createContext, useContext } from "react";
+import { Bot } from "lucide-react";
 import AppHeader from "@/components/layout/AppHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
+import NitidinaPanel from "@/components/NitidinaPanel";
 
 // Import all page components
 import AccessPage from "@/pages/access/AccessPage";
@@ -22,8 +25,14 @@ import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Add currentUser to the AuthContextType
+type User = {
+  displayName: string;
+};
+
 type AuthContextType = {
   isAuthenticated: boolean;
+  currentUser: User | null;
   login: () => void;
   logout: () => void;
 };
@@ -73,18 +82,28 @@ const ShowHeaderWrapper = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isNitidinaOpen, setIsNitidinaOpen] = useState(false);
+  // Add a mock user state
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const login = () => {
     setIsAuthenticated(true);
+    // Set a mock user when logging in
+    setCurrentUser({ displayName: "Sarah Johnson" });
   };
 
   const logout = () => {
     setIsAuthenticated(false);
+    setCurrentUser(null);
+  };
+
+  const toggleNitidina = () => {
+    setIsNitidinaOpen(!isNitidinaOpen);
   };
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+      <AuthContext.Provider value={{ isAuthenticated, currentUser, login, logout }}>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -94,6 +113,14 @@ const App = () => {
                 {isAuthenticated && (
                   <div className="flex items-center justify-end gap-2 fixed top-4 right-4 z-50">
                     <NotificationCenter />
+                    {/* Add Nitidina button in the header when authenticated */}
+                    <button
+                      className="bg-black text-white rounded-full p-2"
+                      onClick={toggleNitidina}
+                      aria-label="Toggle Nitidina Assistant"
+                    >
+                      <Bot size={20} />
+                    </button>
                   </div>
                 )}
                 <Routes>
@@ -144,6 +171,14 @@ const App = () => {
             </BrowserRouter>
             <SiteFooter />
           </div>
+          
+          {/* Add Nitidina Panel */}
+          {isAuthenticated && (
+            <NitidinaPanel 
+              isOpen={isNitidinaOpen} 
+              onClose={toggleNitidina}
+            />
+          )}
         </TooltipProvider>
       </AuthContext.Provider>
     </QueryClientProvider>
