@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Calendar,
@@ -40,14 +39,18 @@ const getSmartGreeting = (firstName: string) => {
   );
 };
 
+import { getSmartGreeting } from "@/utils/smartGreeting";   // helper that returns Marina’s personalised text
+
+const greeting = getSmartGreeting(user.firstName);   // will be "Welcome back Marina …"
+
 // ---------- Component ----------
 export default function IndexPage() {
   const [chatOpen, setChatOpen] = useState(false);
-  const [greeting, setGreeting] = useState("");
+  const [greetingText, setGreetingText] = useState("");
   const user = { firstName: "Marina" };                   // 👉 replace with real user hook later
 
   useEffect(() => {
-    setGreeting(getSmartGreeting(user.firstName));
+    setGreetingText(getSmartGreeting(user.firstName));
   }, []);
 
   const navItems: NavItem[] = [
@@ -160,7 +163,7 @@ export default function IndexPage() {
         <ChatPanel
           open={chatOpen}
           onClose={() => setChatOpen(false)}
-          onOpen={() => setChatOpen(true)}
+          initialGreeting={greeting}
         />
       </div>
     </div>
