@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { Bot, X, Send } from "lucide-react";
+import { X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type MessageType = {
   sender: "user" | "nitidina";
   text: string;
 };
 
-// Simulate an async greeting function
 const getInitialNitidinaGreeting = async (): Promise<string> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -41,14 +41,12 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
 
   useEffect(() => {
     if (isOpen) {
-      // If there are no messages yet, fetch the initial greeting
       if (messages.length === 0) {
         getInitialNitidinaGreeting().then((greeting) => {
           setMessages([{ sender: "nitidina", text: greeting }]);
         });
       }
       
-      // Focus the input when panel opens
       setTimeout(() => {
         inputRef.current?.focus();
       }, 300);
@@ -62,7 +60,6 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
 
-    // Add user message
     const newMessage: MessageType = {
       sender: "user",
       text: inputValue.trim(),
@@ -71,7 +68,6 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
     setMessages((prev) => [...prev, newMessage]);
     setInputValue("");
 
-    // Simulate Nitidina's response
     setTimeout(() => {
       const nitidinaResponse: MessageType = {
         sender: "nitidina",
@@ -90,18 +86,23 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
 
   return (
     <>
-      {/* Collapsed state - floating icon */}
       {!isOpen && (
         <button
           onClick={onToggle}
-          className="fixed top-20 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all"
+          className="fixed top-20 right-6 z-50 flex items-center justify-center rounded-full shadow-lg transition-all hover:scale-105"
           aria-label="Open Nitidina Assistant"
         >
-          <Bot size={24} />
+          <Avatar className="h-12 w-12 border-2 border-primary/50">
+            <AvatarImage 
+              src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png" 
+              alt="Nitidina Assistant" 
+              className="object-cover"
+            />
+            <AvatarFallback>NI</AvatarFallback>
+          </Avatar>
         </button>
       )}
 
-      {/* Expanded state - panel */}
       <aside
         className={cn(
           "fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300",
@@ -109,12 +110,16 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        {/* Header */}
         <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
           <div className="flex items-center gap-2">
-            <div className="rounded-full bg-primary/10 p-1">
-              <Bot size={20} className="text-primary" />
-            </div>
+            <Avatar className="h-8 w-8">
+              <AvatarImage 
+                src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png" 
+                alt="Nitidina Assistant" 
+                className="object-cover"
+              />
+              <AvatarFallback>NI</AvatarFallback>
+            </Avatar>
             <h3 className="font-medium">Nitidina Assistant</h3>
           </div>
           <button 
@@ -126,7 +131,6 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
           </button>
         </div>
 
-        {/* Messages container */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.map((message, index) => (
             <div
@@ -151,7 +155,6 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input area */}
         <div className="border-t p-4">
           <div className="flex items-center gap-2">
             <input
