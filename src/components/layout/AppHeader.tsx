@@ -1,6 +1,6 @@
 
 import React from "react";
-import { settings, bell } from "lucide-react";
+import { Settings, Bell } from "lucide-react";
 
 const languages = [
   { code: "en", label: "EN" },
@@ -24,7 +24,7 @@ const AppHeader: React.FC = () => {
       <div className="flex items-center gap-6">
         {/* Settings Icon */}
         <button aria-label="Settings" className="hover:text-gray-900 text-gray-600">
-          {React.createElement(settings, { size: 20 })}
+          <Settings size={20} />
         </button>
 
         {/* Language Selector */}
@@ -52,7 +52,7 @@ const AppHeader: React.FC = () => {
 
         {/* Notifications Icon */}
         <button aria-label="Notifications" className="relative hover:text-gray-900 text-gray-600 ml-2">
-          {React.createElement(bell, { size: 22 })}
+          <Bell size={22} />
           <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
         </button>
       </div>
