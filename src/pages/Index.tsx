@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +9,25 @@ const Index = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
+  const handleLogout = () => {
+    logout();
+    navigate("/access");
+  };
+
   return (
     <div className="container max-w-7xl mx-auto p-6">
+      <header className="mb-12 flex justify-between items-center">
+        <div className="text-center flex-1">
+          <h1 className="text-4xl font-bold mb-4">Nítido Loan Management Platform</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            AI-powered loan management platform for syndicated lending portfolios
+          </p>
+        </div>
+        <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
+          <LogOut size={16} /> Logout
+        </Button>
+      </header>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Dashboard */}
         <Card className="hover:shadow-md transition-shadow">
