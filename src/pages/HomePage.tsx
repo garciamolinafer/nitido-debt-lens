@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Calendar, LayoutGrid, MessageSquare, Bot, Network, Settings } from "lucide-react";
+import { Calendar, LayoutGrid, MessageSquare, Bot, Network, Settings, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Sidebar from "@/components/dashboard/Sidebar";
@@ -167,7 +168,6 @@ I placed my recommended actions in "Nítido Chats".`;
       <AppHeader />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar 
-          navigationButtons={navigationButtons} 
           collapsed={assistantOpen}
         />
         <div className="flex-1 overflow-auto p-6">
