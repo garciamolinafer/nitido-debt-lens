@@ -80,6 +80,9 @@ export default function IndexPage() {
     }
   ];
 
+  // Set initial state of chatOpen to true
+  const [chatOpen, setChatOpen] = useState(true);
+
   // ---------- JSX ----------
   return (
     <div className="flex flex-col h-screen bg-white">
@@ -118,8 +121,9 @@ export default function IndexPage() {
           </div>
         </div>
 
+        {/* Nitidina panel */}
         <ChatPanel
-          open={true}
+          open={chatOpen}
           onClose={() => {}}
           initialGreeting={greeting}
         />
@@ -127,3 +131,4 @@ export default function IndexPage() {
     </div>
   );
 }
+export default IndexPage;
