@@ -9,7 +9,6 @@ type MessageType = {
   text: string;
 };
 
-// Updated welcome message and greeting generation as requested
 const getInitialNitidinaGreeting = async (): Promise<string> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -36,12 +35,13 @@ Let me know how can I assist further`);
 interface NitidinaPanelProps {
   isOpen: boolean;
   onToggle: () => void;
+  showCloseButton?: boolean;
 }
 
 const NITIDINA_AVATAR_IMG = "/lovable-uploads/8e1f1c48-bd1c-47d6-b0dd-7682f9789473.png";
 const NITIDINA_AVATAR_ALT = "Nitidina Assistant Avatar";
 
-const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
+const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPanelProps) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -53,14 +53,11 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
 
   useEffect(() => {
     if (isOpen) {
-      // If there are no messages yet, fetch the initial greeting
       if (messages.length === 0) {
         getInitialNitidinaGreeting().then((greeting) => {
           setMessages([{ sender: "nitidina", text: greeting }]);
         });
       }
-      
-      // Focus the input when panel opens
       setTimeout(() => {
         inputRef.current?.focus();
       }, 300);
@@ -74,7 +71,6 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
 
-    // Add user message
     const newMessage: MessageType = {
       sender: "user",
       text: inputValue.trim(),
@@ -83,7 +79,6 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
     setMessages((prev) => [...prev, newMessage]);
     setInputValue("");
 
-    // Simulate Nitidina's response
     setTimeout(() => {
       const nitidinaResponse: MessageType = {
         sender: "nitidina",
@@ -101,80 +96,87 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
   };
 
   return (
-    <>
-      {/* The panel will always be open, so don't render the floating avatar. */}
-
-      <aside
-        className={`fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 translate-x-0`}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
-              <AvatarImage
-                className="object-cover"
-                src={NITIDINA_AVATAR_IMG}
-                alt={NITIDINA_AVATAR_ALT}
-              />
-              <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
-                MW
-              </AvatarFallback>
-            </Avatar>
-            <h3 className="font-medium text-base">Nitidina</h3>
-          </div>
-          {/* Remove/disable close button so the panel is always open */}
-          <span className="w-5 h-5"></span>
-        </div>
-
-        {/* Messages container */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={
-                message.sender === "user" ? "flex justify-end" : "flex justify-start"
-              }
-            >
-              <div
-                className={
-                  message.sender === "user"
-                    ? "max-w-[80%] rounded-lg px-4 py-2 bg-primary text-white text-sm"
-                    : "max-w-[80%] rounded-lg px-4 py-2 bg-yellow-100 text-gray-900 text-sm"
-                }
-                style={{ wordBreak: "break-word" }}
-              >
-                {message.text}
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input area */}
-        <div className="border-t p-4 bg-white">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              ref={inputRef}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
-              className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-xs focus:border-primary focus:outline-none"
-              style={{ fontSize: "13px" }}
+    <aside
+      className={`fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 translate-x-0`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
+            <AvatarImage
+              className="object-cover"
+              src={NITIDINA_AVATAR_IMG}
+              alt={NITIDINA_AVATAR_ALT}
             />
-            <Button
-              size="sm"
-              onClick={handleSendMessage}
-              className="rounded-md px-3 text-xs"
-              disabled={!inputValue.trim()}
-            >
-              Send
-            </Button>
-          </div>
+            <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
+              MW
+            </AvatarFallback>
+          </Avatar>
+          <h3 className="font-medium text-base">Nitidina</h3>
         </div>
-      </aside>
-    </>
+        {showCloseButton ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            className="h-8 w-8"
+            aria-label="Close Nitidina Chat"
+          >
+            <X className="w-5 h-5" />
+          </Button>
+        ) : (
+          <span className="w-5 h-5"></span>
+        )}
+      </div>
+
+      {/* Messages container */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-white">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={
+              message.sender === "user" ? "flex justify-end" : "flex justify-start"
+            }
+          >
+            <div
+              className={
+                message.sender === "user"
+                  ? "max-w-[80%] rounded-lg px-3 py-2 bg-primary text-white text-xs"
+                  : "max-w-[80%] rounded-lg px-3 py-2 bg-yellow-100 text-gray-900 text-xs"
+              }
+              style={{ wordBreak: "break-word" }}
+            >
+              {message.text}
+            </div>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input area */}
+      <div className="border-t p-3 bg-white">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            ref={inputRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your message..."
+            className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+            style={{ fontSize: "12px" }}
+          />
+          <Button
+            size="sm"
+            onClick={handleSendMessage}
+            className="rounded-md px-3 text-xs"
+            disabled={!inputValue.trim()}
+          >
+            Send
+          </Button>
+        </div>
+      </div>
+    </aside>
   );
 };
 

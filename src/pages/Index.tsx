@@ -58,18 +58,26 @@ const navTiles: NavTileData[] = [
 
 const Index = () => {
   const navigate = useNavigate();
-  // For permanently open Nitidina, remove the local state variable
+  // Added state for Nitidina panel
+  const [nitidinaOpen, setNitidinaOpen] = useState(true);
+
   const pendingAgenda = 2; // Dummy state for pending agenda items
 
   const handleTileClick = (id: string) => {
     navigate(`/${id}`);
   };
 
-  // toggleNitidinaPanel is now a no-op because NitidinaPanel is always open
-  const toggleNitidinaPanel = () => {};
+  // Callback for closing Nitidina panel
+  const handleNitidinaClose = () => {
+    setNitidinaOpen(false);
+  };
+
+  // Optionally, allow user to reopen Nitidina if it's closed (not required, but adds UX)
+  // Uncomment below to provide a button:
+  // const handleNitidinaOpen = () => setNitidinaOpen(true);
 
   return (
-    <div className="container max-w-7xl mx-auto p-6 min-h-screen">
+    <div className="container max-w-7xl mx-auto p-6 min-h-screen relative">
       <header className="mb-12 text-center">
         <h1 className="text-4xl font-bold mb-4">Nítido Command Center</h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -80,7 +88,7 @@ const Index = () => {
       <div
         className={cn(
           "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-300 ease-in-out",
-          // no more opacity changes based on panel open state
+          nitidinaOpen ? "sm:mr-96" : "" // Add right margin if Nitidina is open for overlap on desktop
         )}
       >
         {navTiles.map((tile) => (
@@ -97,10 +105,18 @@ const Index = () => {
         ))}
       </div>
 
-      <NitidinaPanel 
-        isOpen={true}
-        onToggle={toggleNitidinaPanel}
-      />
+      {nitidinaOpen && (
+        <NitidinaPanel 
+          isOpen={nitidinaOpen}
+          onToggle={handleNitidinaClose}
+          showCloseButton={true}
+        />
+      )}
+
+      {/* Optional reopen button: */}
+      {/* {!nitidinaOpen && (
+        <button onClick={handleNitidinaOpen} className="fixed bottom-6 right-6 bg-yellow-500 text-white rounded px-4 py-2 shadow-lg z-50">Open Nitidina</button>
+      )} */}
     </div>
   );
 };
