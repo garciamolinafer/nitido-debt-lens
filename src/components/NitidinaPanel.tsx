@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -116,7 +117,7 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
               <AvatarImage 
                 src="/lovable-uploads/97e9da13-fe84-4a49-9699-535c9539831f.png" 
                 alt="Nitidina Assistant" 
-                className="object-cover"
+                className="object-cover object-top"
               />
               <AvatarFallback>NI</AvatarFallback>
             </Avatar>
