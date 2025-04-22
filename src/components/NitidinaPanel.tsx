@@ -9,7 +9,7 @@ type MessageType = {
   text: string;
 };
 
-// Simulate an async greeting function
+// Updated welcome message and greeting generation as requested
 const getInitialNitidinaGreeting = async (): Promise<string> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -20,7 +20,15 @@ const getInitialNitidinaGreeting = async (): Promise<string> => {
       else if (hour < 18) greeting = "Good afternoon";
       else greeting = "Good evening";
       
-      resolve(`${greeting} Marina! How can I assist you with your portfolio management today?`);
+      resolve(`${greeting} Marina! We have a busy day ahead:
+
+I have reconciled your corporate agenda with the tasks extracted from your portfolio and generated a proposed priority schedule. Check it here
+
+There are various ongoing discussions that need your attention, particularly on the Abengoa and the Outer Banks transactions. I have prepared a summary with recommended actions and responses at the Nítido chat section.
+
+The AI Agents have been quite active on your absence and have processed many tasks and questions. Some of them need to be reviewed by you before being processed. Check at the Nítido AI Agents section
+
+Let me know how can I assist further`);
     }, 800);
   });
 };
@@ -193,4 +201,3 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
 };
 
 export default NitidinaPanel;
-
