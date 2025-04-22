@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Calendar,
@@ -14,8 +13,8 @@ import AppHeader from "@/components/layout/AppHeader";
 import ChatPanel from "@/components/chat/ChatPanel";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import "@/index.css";                                     // tailwind base
-import { useAuth } from "@/App";      // already in project – used for username
+import "@/index.css";
+import { useAuth } from "@/App";
 
 /* Helper: returns Nitidina's smart greeting */
 const getSmartGreeting = (name: string) =>
@@ -84,14 +83,10 @@ export default function IndexPage() {
   // ---------- JSX ----------
   return (
     <div className="flex flex-col h-screen bg-white">
-      {/* global header */}
       <AppHeader />
 
-      {/* body */}
       <div className="flex flex-1 overflow-hidden">
-        {/* main column */}
         <div className="flex flex-col flex-1 p-6 overflow-auto">
-          {/* Nitidina helper banner */}
           <Card className="mb-6 p-4 border border-gray-200 shadow-sm bg-gray-50 whitespace-pre-line">
             <div className="flex">
               <Bot className="w-6 h-6 mr-2 shrink-0" />
@@ -99,7 +94,6 @@ export default function IndexPage() {
             </div>
           </Card>
 
-          {/* navigation grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {navItems.map(({ id, label, subtitle, Icon, hasBadge }) => (
               <Card
@@ -124,7 +118,6 @@ export default function IndexPage() {
           </div>
         </div>
 
-        {/* Nitidina chat panel is always visible */}
         <ChatPanel
           open={true}
           onClose={() => {}}
@@ -134,4 +127,3 @@ export default function IndexPage() {
     </div>
   );
 }
-
