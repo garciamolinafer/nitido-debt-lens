@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -88,8 +87,8 @@ const App = () => {
 
   const login = () => {
     setIsAuthenticated(true);
-    // Set a mock user when logging in
-    setCurrentUser({ displayName: "Sarah Johnson" });
+    // Set mock user with Marina Whitman as the name
+    setCurrentUser({ displayName: "Marina Whitman" });
   };
 
   const logout = () => {
