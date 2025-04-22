@@ -18,7 +18,6 @@ import NotificationCenter from "./components/notifications/NotificationCenter";
 import AccessPage from "./pages/access/AccessPage";
 import SiteFooter from "./components/layout/SiteFooter";
 import AppHeader from "@/components/layout/AppHeader";
-import HomePage from "./pages/HomePage";
 
 const queryClient = new QueryClient();
 
@@ -88,7 +87,7 @@ const App = () => {
                 <Route path="/access" element={<AccessPage />} />
                 <Route path="/" element={
                   <ProtectedRoute>
-                    <HomePage />
+                    <Index />
                   </ProtectedRoute>
                 } />
                 <Route path="/dashboard" element={

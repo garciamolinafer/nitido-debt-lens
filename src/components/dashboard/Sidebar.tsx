@@ -10,10 +10,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface SidebarProps {
-  collapsed?: boolean;
-}
-
 const navItems = [
   { icon: Briefcase, label: 'Deals', active: true },
   { icon: FileText, label: 'Documents', active: false },
@@ -23,14 +19,11 @@ const navItems = [
   { icon: Settings, label: 'Settings', active: false },
 ];
 
-const Sidebar = ({ collapsed = false }: SidebarProps) => {
+const Sidebar = () => {
   const [activeItem, setActiveItem] = useState('Deals');
   
   return (
-    <aside className={cn(
-      "border-r border-gray-200 bg-white transition-all duration-300",
-      collapsed ? "w-16" : "w-64"
-    )}>
+    <aside className="w-64 border-r border-gray-200 bg-white">
       <div className="flex flex-col h-full">
         <nav className="flex-1 px-4 py-6">
           <ul className="space-y-1">
@@ -46,28 +39,26 @@ const Sidebar = ({ collapsed = false }: SidebarProps) => {
                   onClick={() => setActiveItem(item.label)}
                 >
                   <item.icon className="h-5 w-5 mr-3" />
-                  {!collapsed && item.label}
+                  {item.label}
                 </button>
               </li>
             ))}
           </ul>
         </nav>
         
-        {!collapsed && (
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-sm font-medium">JD</span>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium">John Doe</p>
-                  <p className="text-xs text-gray-500">Agent</p>
-                </div>
+        <div className="p-4 border-t border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-sm font-medium">JD</span>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium">John Doe</p>
+                <p className="text-xs text-gray-500">Agent</p>
               </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </aside>
   );
