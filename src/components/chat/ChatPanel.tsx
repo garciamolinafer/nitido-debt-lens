@@ -39,7 +39,17 @@ export default function ChatPanel({
       { id: m.length + 1, from: "user", text: draft.trim() }
     ]);
     setDraft("");
-    // 👉 hook real AI backend here to push bot response
+    // Simulate bot response
+    setTimeout(() => {
+      setMessages((m) => [
+        ...m,
+        { 
+          id: m.length + 1, 
+          from: "bot", 
+          text: "I'm Nitidina, your AI assistant. How can I help you today?" 
+        }
+      ]);
+    }, 1000);
   };
 
   return (

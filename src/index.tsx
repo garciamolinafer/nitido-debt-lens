@@ -16,11 +16,11 @@ import { Card } from "@/components/ui/card";
 import "@/index.css";                                     // tailwind base
 import { useAuth } from "@/App";      // already in project – used for username
 
-/* Helper: returns Nitidina’s smart greeting */
+/* Helper: returns Nitidina's smart greeting */
 const getSmartGreeting = (name: string) =>
   `Welcome back ${name}. We have a busy day ahead. I have reconciled your agenda from Outlook with the tasks extracted from your portfolio. Check the agenda and let me know how I can assist.
 
-There are various ongoing discussions that need your attention, particularly on the Abengoa and the Outer Banks transactions. I have prepared a summary with recommended actions and responses in the Nítido Chat.`;
+There are various ongoing discussions that need your attention, particularly on the Abengoa and the Outer Banks transactions. I have prepared a summary with recommended actions and responses in the Nítido Chat.`;
 
 // ---------- Types ----------
 type NavItem = {
@@ -31,21 +31,15 @@ type NavItem = {
   hasBadge?: boolean;
 };
 
-// ---------- Smart Greeting ----------
-const greeting = "Welcome back Marina …";
-
 // ---------- Component ----------
 export default function IndexPage() {
   const [chatOpen, setChatOpen] = useState(false);
   const [greetingText, setGreetingText] = useState("");
   const user = { firstName: "Marina" };                   // 👉 replace with real user hook later
-  const { currentUser } = useAuth();          // may be null on first render
-  const userName = currentUser?.displayName?.split(" ")[0] || "User";
+  const auth = useAuth();
+  // Use isAuthenticated as a fallback check before accessing user information
+  const userName = auth.isAuthenticated ? (user.firstName || "User") : "User";
   const greeting = getSmartGreeting(userName);
-
-  useEffect(() => {
-    setGreetingText(getSmartGreeting(user.firstName));
-  }, []);
 
   const navItems: NavItem[] = [
     {
