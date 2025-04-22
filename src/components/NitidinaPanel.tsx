@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Bot, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -91,11 +90,11 @@ const NitidinaPanel = ({ isOpen, onToggle }: NitidinaPanelProps) => {
 
   return (
     <>
-      {/* Collapsed state - floating button */}
+      {/* Collapsed state - floating icon */}
       {!isOpen && (
         <button
           onClick={onToggle}
-          className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all"
+          className="fixed top-20 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all"
           aria-label="Open Nitidina Assistant"
         >
           <Bot size={24} />
