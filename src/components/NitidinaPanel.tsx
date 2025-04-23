@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
-import { X } from "lucide-react";
+import { X, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -88,12 +88,98 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
   };
 
   return (
-    <aside
-      className={`fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 translate-x-0`}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
-        <div className="flex items-center gap-2">
+    <>
+      {/* Main Panel - visible when open */}
+      {isOpen && (
+        <aside className="fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 translate-x-0">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
+                <AvatarImage
+                  className="object-cover"
+                  src={NITIDINA_AVATAR_IMG}
+                  alt={NITIDINA_AVATAR_ALT}
+                />
+                <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
+                  MW
+                </AvatarFallback>
+              </Avatar>
+              <h3 className="font-medium text-base">Nitidina</h3>
+            </div>
+            {showCloseButton ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggle}
+                className="h-8 w-8"
+                aria-label="Close Nitidina Chat"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            ) : (
+              <span className="w-5 h-5"></span>
+            )}
+          </div>
+
+          {/* Messages container */}
+          <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-white">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={
+                  message.sender === "user" ? "flex justify-end" : "flex justify-start"
+                }
+              >
+                <div
+                  className={
+                    message.sender === "user"
+                      ? "max-w-[80%] rounded-lg px-3 py-2 bg-primary text-white text-xs"
+                      : "max-w-[80%] rounded-lg px-3 py-2 bg-yellow-100 text-gray-900 text-xs whitespace-pre-line"
+                  }
+                >
+                  {message.text}
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input area */}
+          <div className="border-t p-3 bg-white">
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                ref={inputRef}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Type your message..."
+                className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-xs focus:border-primary focus:outline-none"
+                style={{ fontSize: "12px" }}
+              />
+              <Button
+                size="sm"
+                onClick={handleSendMessage}
+                className="rounded-md px-3 text-xs"
+                disabled={!inputValue.trim()}
+              >
+                Send
+              </Button>
+            </div>
+          </div>
+        </aside>
+      )}
+      
+      {/* Floating button - visible when panel is closed */}
+      {!isOpen && (
+        <Button
+          variant="secondary"
+          size="icon"
+          className="fixed right-6 top-16 z-40 h-10 w-10 rounded-full bg-yellow-200 hover:bg-yellow-300 shadow-lg"
+          onClick={onToggle}
+          aria-label="Open Nitidina Chat"
+        >
           <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
             <AvatarImage
               className="object-cover"
@@ -104,70 +190,9 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
               MW
             </AvatarFallback>
           </Avatar>
-          <h3 className="font-medium text-base">Nitidina</h3>
-        </div>
-        {showCloseButton ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggle}
-            className="h-8 w-8"
-            aria-label="Close Nitidina Chat"
-          >
-            <X className="w-5 h-5" />
-          </Button>
-        ) : (
-          <span className="w-5 h-5"></span>
-        )}
-      </div>
-
-      {/* Messages container */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-white">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={
-              message.sender === "user" ? "flex justify-end" : "flex justify-start"
-            }
-          >
-            <div
-              className={
-                message.sender === "user"
-                  ? "max-w-[80%] rounded-lg px-3 py-2 bg-primary text-white text-xs"
-                  : "max-w-[80%] rounded-lg px-3 py-2 bg-yellow-100 text-gray-900 text-xs whitespace-pre-line"
-              }
-            >
-              {message.text}
-            </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Input area */}
-      <div className="border-t p-3 bg-white">
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            ref={inputRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-xs focus:border-primary focus:outline-none"
-            style={{ fontSize: "12px" }}
-          />
-          <Button
-            size="sm"
-            onClick={handleSendMessage}
-            className="rounded-md px-3 text-xs"
-            disabled={!inputValue.trim()}
-          >
-            Send
-          </Button>
-        </div>
-      </div>
-    </aside>
+        </Button>
+      )}
+    </>
   );
 };
 

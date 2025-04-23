@@ -58,7 +58,6 @@ const navTiles: NavTileData[] = [
 
 const Index = () => {
   const navigate = useNavigate();
-  // Added state for Nitidina panel
   const [nitidinaOpen, setNitidinaOpen] = useState(true);
 
   const pendingAgenda = 2; // Dummy state for pending agenda items
@@ -67,14 +66,10 @@ const Index = () => {
     navigate(`/${id}`);
   };
 
-  // Callback for closing Nitidina panel
-  const handleNitidinaClose = () => {
-    setNitidinaOpen(false);
+  // Toggle function for Nitidina panel
+  const toggleNitidina = () => {
+    setNitidinaOpen(!nitidinaOpen);
   };
-
-  // Optionally, allow user to reopen Nitidina if it's closed (not required, but adds UX)
-  // Uncomment below to provide a button:
-  // const handleNitidinaOpen = () => setNitidinaOpen(true);
 
   return (
     <div className="container max-w-7xl mx-auto p-6 min-h-screen relative">
@@ -105,18 +100,11 @@ const Index = () => {
         ))}
       </div>
 
-      {nitidinaOpen && (
-        <NitidinaPanel 
-          isOpen={nitidinaOpen}
-          onToggle={handleNitidinaClose}
-          showCloseButton={true}
-        />
-      )}
-
-      {/* Optional reopen button: */}
-      {/* {!nitidinaOpen && (
-        <button onClick={handleNitidinaOpen} className="fixed bottom-6 right-6 bg-yellow-500 text-white rounded px-4 py-2 shadow-lg z-50">Open Nitidina</button>
-      )} */}
+      <NitidinaPanel 
+        isOpen={nitidinaOpen}
+        onToggle={toggleNitidina}
+        showCloseButton={true}
+      />
     </div>
   );
 };
