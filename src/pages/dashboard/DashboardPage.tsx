@@ -1,19 +1,10 @@
 import { useState } from "react";
-import { 
-  Bell, 
-  MessageSquare, 
-  ChevronDown, 
-  Search, 
-  Home, 
-  LogOut 
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Home } from "lucide-react";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/App";
+import DealStats from "@/components/dashboard/DealStats";
+import DealSearch from "@/components/dashboard/DealSearch";
 
 export type Deal = {
   id: string;
@@ -42,8 +33,6 @@ const navigationButtons = [
 ];
 
 const DashboardPage = () => {
-  const navigate = useNavigate();
-  const { logout } = useAuth();
   const [deals, setDeals] = useState<Deal[]>([
     {
       id: "1",
@@ -105,38 +94,20 @@ const DashboardPage = () => {
     deal.borrower.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleLogout = () => {
-    logout();
-    navigate("/access");
-  };
-
   return (
-    <div className="flex h-screen bg-white overflow-hidden"> {/* Added overflow-hidden */}
-      <Sidebar
-        collapsed={false}
-        buttons={navigationButtons}
-      />
+    <div className="flex h-screen bg-white overflow-hidden">
+      <Sidebar buttons={navigationButtons} />
       
-      <div className="flex flex-col flex-1 overflow-hidden"> {/* Added overflow-hidden */}
-        <div className="flex flex-1 overflow-hidden"> {/* Added overflow-hidden */}
-          <div className="flex-1 overflow-auto p-6"> {/* Kept overflow-auto */}
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold">My Deals</h1>
-              
-              <div className="relative w-64">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-                <Input
-                  placeholder="Search deals..."
-                  className="pl-8"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </div>
-            
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden">
+          <div className="flex-1 overflow-auto p-6">
+            <DealStats deals={deals} />
+            <DealSearch 
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+            />
             <DealsTable deals={filteredDeals} />
           </div>
-          
           <AlertsPanel alerts={alerts} />
         </div>
       </div>
