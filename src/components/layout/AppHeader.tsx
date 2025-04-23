@@ -1,6 +1,16 @@
 
 import React from "react";
-import { Settings, Bell } from "lucide-react";
+import { Settings, Bell, User, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/App";
 
 const languages = [
   { code: "en", label: "EN" },
@@ -8,8 +18,15 @@ const languages = [
 ];
 
 const AppHeader: React.FC = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   // Dummy manager image - replace this path if you upload a real picture
   const managerImg = "/placeholder.svg";
+
+  const handleLogout = () => {
+    logout();
+    navigate("/access");
+  };
 
   return (
     <header className="h-16 flex items-center justify-between px-6 border-b border-gray-200 bg-white">
@@ -40,15 +57,34 @@ const AppHeader: React.FC = () => {
           ))}
         </select>
 
-        {/* Manager Name & Photo */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-800">Marina Whitman</span>
-          <img
-            src={managerImg}
-            alt="Manager"
-            className="h-8 w-8 rounded-full object-cover border border-gray-200"
-          />
-        </div>
+        {/* Manager Name & Photo with Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex items-center gap-2 cursor-pointer">
+              <span className="text-sm font-medium text-gray-800">Marina Whitman</span>
+              <img
+                src={managerImg}
+                alt="Manager"
+                className="h-8 w-8 rounded-full object-cover border border-gray-200"
+              />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48 bg-white" align="end">
+            <DropdownMenuItem className="cursor-pointer">
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Preferences</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Notifications Icon */}
         <button aria-label="Notifications" className="relative hover:text-gray-900 text-gray-600 ml-2">
