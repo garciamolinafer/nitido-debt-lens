@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,14 +18,10 @@ const getInitialNitidinaGreeting = async (): Promise<string> => {
       else if (hour < 18) greeting = "Good afternoon";
       else greeting = "Good evening";
       
-      resolve(`${greeting} Marina! \nWe have a busy day ahead:\n\n
-
+      resolve(`${greeting} Marina!\nWe have a busy day ahead:\n\n
 I have reconciled your corporate agenda with the tasks extracted from your portfolio and generated a proposed priority schedule. Check it here\n\n
-
 There are various ongoing discussions that need your attention, particularly on the Abengoa and the Outer Banks transactions. I have prepared a summary with recommended actions and responses at the Nítido chat section.\n\n
-
 The AI Agents have been quite active on your absence and have processed many tasks and questions. Some of them need to be reviewed by you before being processed. Check at the Nítido AI Agents section\n\n
-
 Let me know how can I assist further`);
     }, 800);
   });
