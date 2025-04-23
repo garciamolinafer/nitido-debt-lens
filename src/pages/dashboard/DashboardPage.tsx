@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Bell, MessageSquare, ChevronDown, Search, Home, LogOut } from "lucide-react";
+import { 
+  Bell, 
+  MessageSquare, 
+  ChevronDown, 
+  Search, 
+  Home, 
+  LogOut 
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Sidebar from "@/components/dashboard/Sidebar";
@@ -23,6 +30,16 @@ export type Alert = {
   dealId?: string;
   severity: "high" | "medium" | "low";
 };
+
+const navigationButtons = [
+  {
+    id: "home",
+    label: "Home",
+    icon: Home,
+    tooltip: "Return to the Nítido Home page",
+    hasBadge: false,
+  },
+];
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -94,12 +111,15 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="flex h-screen bg-white">
-      <Sidebar />
+    <div className="flex h-screen bg-white overflow-hidden"> {/* Added overflow-hidden */}
+      <Sidebar
+        collapsed={false}
+        buttons={navigationButtons}
+      />
       
-      <div className="flex flex-col flex-1">
-        <div className="flex flex-1 overflow-hidden">
-          <div className="flex-1 overflow-auto p-6">
+      <div className="flex flex-col flex-1 overflow-hidden"> {/* Added overflow-hidden */}
+        <div className="flex flex-1 overflow-hidden"> {/* Added overflow-hidden */}
+          <div className="flex-1 overflow-auto p-6"> {/* Kept overflow-auto */}
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold">My Deals</h1>
               
