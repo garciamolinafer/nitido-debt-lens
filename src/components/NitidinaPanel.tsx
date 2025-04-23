@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -133,9 +134,8 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
               className={
                 message.sender === "user"
                   ? "max-w-[80%] rounded-lg px-3 py-2 bg-primary text-white text-xs"
-                  : "max-w-[80%] rounded-lg px-3 py-2 bg-yellow-100 text-gray-900 text-xs"
+                  : "max-w-[80%] rounded-lg px-3 py-2 bg-yellow-100 text-gray-900 text-xs whitespace-pre-line"
               }
-              style={{ wordBreak: "break-word" }}
             >
               {message.text}
             </div>
