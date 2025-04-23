@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Home } from "lucide-react";
 import Sidebar from "@/components/dashboard/Sidebar";
@@ -96,7 +97,7 @@ const DashboardPage = () => {
 
   return (
     <div className="flex h-screen bg-white overflow-hidden">
-      <Sidebar buttons={navigationButtons} />
+      <Sidebar />
       
       <div className="flex flex-col flex-1 overflow-hidden">
         <div className="flex flex-1 overflow-hidden">
