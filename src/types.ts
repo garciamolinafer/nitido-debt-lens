@@ -1,4 +1,5 @@
 
+/** Global app types so every component imports from one place */
 export type Deal = {
   id: string;
   name: string;
