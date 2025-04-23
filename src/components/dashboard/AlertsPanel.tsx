@@ -1,81 +1,84 @@
 
-import { Wand2, FileText, AlertTriangle, CalendarDays } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Alert } from "@/types";
+import { AlertTriangle, FileText, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import type { Alert } from "@/pages/dashboard/DashboardPage";
 
-type Props = { alerts: Alert[] };
-
-const optionSets: Record<Alert["type"], { label: string; action: string }[]> = {
-  document: [
-    { label: "Summarise & propose next steps", action: "summarise-docs" },
-    { label: "Share docs with lenders", action: "share-docs" },
-    { label: "Extract & file key data", action: "extract-docs" },
-  ],
-  covenant: [
-    { label: "Draft breach / waiver notice", action: "draft-waiver" },
-    { label: "Email lenders explanation", action: "email-lenders" },
-    { label: "Run impact simulation", action: "simulate-impact" },
-  ],
-  payment: [
-    { label: "Prepare interest notice", action: "draft-notice" },
-    { label: "Confirm payment instructions", action: "confirm-pay" },
-    { label: "Schedule auto-reminder", action: "schedule-reminder" },
-  ],
+type AlertsPanelProps = {
+  alerts: Alert[];
 };
 
-const iconFor = (type: Alert["type"]) =>
-  type === "document"
-    ? FileText
-    : type === "covenant"
-    ? AlertTriangle
-    : CalendarDays;
+const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
+  const navigate = useNavigate();
+  
+  const getAlertIcon = (type: Alert['type']) => {
+    switch (type) {
+      case 'document':
+        return <FileText className="h-5 w-5 text-blue-500" />;
+      case 'covenant':
+        return <AlertTriangle className="h-5 w-5 text-red-500" />;
+      case 'payment':
+        return <Calendar className="h-5 w-5 text-amber-500" />;
+      default:
+        return <AlertTriangle className="h-5 w-5" />;
+    }
+  };
 
-const AlertsPanel = ({ alerts }: Props) => (
-  <aside className="w-72 border-l border-gray-200 bg-gray-50 p-4 flex flex-col">
-    <h2 className="font-semibold text-lg mb-3">Alerts &amp; Tasks</h2>
+  const getBgColor = (severity: Alert['severity']) => {
+    switch (severity) {
+      case 'high':
+        return "bg-red-50";
+      case 'medium':
+        return "bg-amber-50";
+      case 'low':
+        return "bg-blue-50";
+      default:
+        return "bg-gray-50";
+    }
+  };
+  
+  const handleAlertClick = (alert: Alert) => {
+    if (alert.dealId) {
+      if (alert.type === 'covenant') {
+        navigate(`/deals/${alert.dealId}/monitoring?tab=covenants`);
+      } else if (alert.type === 'document') {
+        navigate(`/deals/${alert.dealId}/monitoring?tab=documents`);
+      } else if (alert.type === 'payment') {
+        navigate(`/deals/${alert.dealId}/loan-admin`);
+      } else {
+        navigate(`/deals/${alert.dealId}`);
+      }
+      console.info(`Navigating to deal ${alert.dealId}`);
+    }
+  };
 
-    <ul className="space-y-2">
-      {alerts.map((al) => {
-        const Icon = iconFor(al.type);
-        return (
-          <li
-            key={al.id}
-            className="bg-white border border-gray-200 rounded p-3 flex items-start text-sm"
+  return (
+    <div className="w-80 border-l border-gray-200 overflow-y-auto bg-gray-50 p-4">
+      <h2 className="text-lg font-bold mb-4">Alerts & Tasks</h2>
+      
+      <div className="space-y-3">
+        {alerts.map((alert) => (
+          <div
+            key={alert.id}
+            className={`flex items-start p-3 rounded-md cursor-pointer transition-colors hover:bg-opacity-80 ${getBgColor(alert.severity)}`}
+            onClick={() => handleAlertClick(alert)}
           >
-            <Icon size={16} className="mt-0.5 mr-2 text-gray-600 shrink-0" />
-            <span className="flex-1">{al.message}</span>
-
-            {/* Agentic AI helper */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="ml-2 text-gray-600 hover:text-black">
-                  <Wand2 size={18} />
-                </button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent side="left">
-                {optionSets[al.type].map((opt) => (
-                  <DropdownMenuItem
-                    key={opt.action}
-                    onClick={() =>
-                      console.log("Agentic option chosen:", opt.action, al.id)
-                    }
-                  >
-                    {opt.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </li>
-        );
-      })}
-    </ul>
-  </aside>
-);
+            <div className="mr-3 mt-0.5">
+              {getAlertIcon(alert.type)}
+            </div>
+            <div>
+              <p className="text-sm">{alert.message}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {alerts.length === 0 && (
+        <p className="text-center text-gray-500 text-sm mt-4">
+          No alerts at this time
+        </p>
+      )}
+    </div>
+  );
+};
 
 export default AlertsPanel;

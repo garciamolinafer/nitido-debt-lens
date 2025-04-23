@@ -1,77 +1,73 @@
 
 import { useEffect, useState } from "react";
-import { X, Send } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import clsx from "clsx";
+import ChatPanelHeader from "./ChatPanelHeader";
+import ChatMessageList, { Message } from "./ChatMessageList";
+import ChatInput from "./ChatInput";
 
-export interface ChatPanelProps {
+interface ChatPanelProps {
+  /** whether the panel is visible */
   open: boolean;
+  /** called when user clicks X (closes panel) */
   onClose: () => void;
+  /** personalised greeting from parent (can be empty) */
   initialGreeting?: string;
 }
 
-const ChatPanel = ({ open, onClose, initialGreeting }: ChatPanelProps) => {
-  const [messages, setMessages] = useState<{ from: "ai" | "me"; text: string }[]>(
-    []
-  );
-  useEffect(() => {
-    if (open && initialGreeting) {
-      setMessages([{ from: "ai", text: initialGreeting }]);
-    }
-  }, [open, initialGreeting]);
-
+export default function ChatPanel({
+  open,
+  onClose,
+  initialGreeting = ""
+}: ChatPanelProps) {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
+
+  // push the smart greeting once, on first open
+  useEffect(() => {
+    if (open && initialGreeting && messages.length === 0) {
+      setMessages([
+        { id: 1, from: "bot", text: initialGreeting },
+      ]);
+    }
+  }, [open, initialGreeting, messages.length]);
+
   const send = () => {
     if (!draft.trim()) return;
-    setMessages([...messages, { from: "me", text: draft }]);
+    setMessages((m) => [
+      ...m,
+      { id: m.length + 1, from: "user", text: draft.trim() }
+    ]);
     setDraft("");
-    // (stub) push to backend AI
+    // Simulate bot response
+    setTimeout(() => {
+      setMessages((m) => [
+        ...m,
+        { 
+          id: m.length + 1, 
+          from: "bot", 
+          text: "I'm Nitidina, your AI assistant. How can I help you today?" 
+        }
+      ]);
+    }, 1000);
   };
 
   return (
-    <div
-      className={`fixed right-4 bottom-4 md:bottom-auto md:top-16 md:right-6 w-80 bg-white border
-       border-gray-300 rounded-lg flex flex-col shadow-lg transition-all ${
-         open ? "opacity-100 visible" : "opacity-0 invisible"
-       }`}
-      style={{ height: open ? "480px" : 0 }}
+    <aside
+      className={clsx(
+        "fixed top-0 right-0 h-screen w-full sm:max-w-md transition-transform z-50 shadow-lg",
+        open ? "translate-x-0" : "translate-x-full"
+      )}
     >
-      {/* header */}
-      <div className="h-10 flex items-center justify-between px-3 border-b">
-        <span className="font-medium">Nitidina</span>
-        <button onClick={onClose}>
-          <X size={16} />
-        </button>
-      </div>
-
-      {/* body */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2 text-sm">
-        {messages.map((m, i) => (
-          <p
-            key={i}
-            className={`rounded px-2 py-1 ${
-              m.from === "ai"
-                ? "bg-gray-100 text-gray-800"
-                : "bg-black text-white ml-auto"
-            }`}
-          >
-            {m.text}
-          </p>
-        ))}
-      </div>
-
-      {/* input */}
-      <div className="border-t flex items-center p-2">
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          className="flex-1 text-sm px-2 py-1 border rounded mr-1"
-          placeholder="Type here ..."
+      <Card className="flex flex-col h-full rounded-none">
+        <ChatPanelHeader onClose={onClose} />
+        <ChatMessageList messages={messages} />
+        <ChatInput
+          draft={draft}
+          setDraft={setDraft}
+          onSend={send}
         />
-        <button onClick={send} className="text-gray-600 hover:text-black">
-          <Send size={16} />
-        </button>
-      </div>
-    </div>
+      </Card>
+    </aside>
   );
-};
-
-export default ChatPanel;
+}
