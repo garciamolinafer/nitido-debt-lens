@@ -1,4 +1,3 @@
-
 import { AlertTriangle, FileText, Calendar, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Alert } from "@/pages/dashboard/DashboardPage";
@@ -10,12 +9,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type AlertsPanelProps = {
+interface Props {
   alerts: Alert[];
-};
+}
 
-const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
+const AlertsPanel = ({ alerts }: Props) => {
   const navigate = useNavigate();
+
+  const bgForSeverity = {
+    high: "border-red-300 bg-red-50",
+    medium: "border-yellow-300 bg-yellow-50",
+    low: "border-sky-300 bg-sky-50",
+  } as const;
   
   const getAlertIcon = (type: Alert['type']) => {
     switch (type) {
@@ -58,52 +63,50 @@ const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
   };
 
   return (
-    <div className="w-80 border-l border-gray-200 overflow-y-auto bg-gray-50 p-4">
-      <h2 className="text-lg font-bold mb-4">Alerts & Tasks</h2>
-      
-      <div className="space-y-3">
-        {alerts.map((alert) => (
-          <div
-            key={alert.id}
-            className={`group flex items-start justify-between p-3 rounded-md border ${getBgColor(alert.severity)}`}
-          >
-            <div className="flex items-start flex-1" onClick={() => handleAlertClick(alert)}>
-              <div className="mr-3 mt-0.5">
-                {getAlertIcon(alert.type)}
-              </div>
-              <div>
-                <p className="text-sm">{alert.message}</p>
-              </div>
-            </div>
+    <aside className="w-64 bg-gray-50 border-l border-gray-200 px-4 py-6 space-y-3">
+      <h2 className="font-semibold text-gray-700 mb-2">Alerts & Tasks</h2>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Sparkles 
-                  size={18} 
-                  className="text-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition ml-2 shrink-0"
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
-                {getAgenticActions(alert).map((action) => (
-                  <DropdownMenuItem 
-                    key={action}
-                    onClick={() => alert(`🔧 (prototype) Nitidina will: "${action}" for alert ${alert.id}`)}
-                  >
-                    {action}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+      {alerts.map((a) => (
+        <div
+          key={a.id}
+          className={`group flex items-start justify-between p-3 rounded-md border ${bgForSeverity[a.severity]}`}
+        >
+          <div className="flex items-start flex-1" onClick={() => handleAlertClick(a)}>
+            <div className="mr-3 mt-0.5">
+              {getAlertIcon(a.type)}
+            </div>
+            <div>
+              <p className="text-sm">{a.message}</p>
+            </div>
           </div>
-        ))}
-      </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Sparkles 
+                size={18} 
+                className="text-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition ml-2 shrink-0"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+              {getAgenticActions(a).map((label) => (
+                <DropdownMenuItem
+                  key={label}
+                  onClick={() => alert(`🔧 (prototype) Nitidina will: "${label}" for alert ${a.id}`)}
+                >
+                  {label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ))}
       
       {alerts.length === 0 && (
         <p className="text-center text-gray-500 text-sm mt-4">
           No alerts at this time
         </p>
       )}
-    </div>
+    </aside>
   );
 };
 
