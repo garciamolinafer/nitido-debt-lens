@@ -21,8 +21,8 @@ const AppHeader: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   
-  // Use a professional-looking image for Marina Whitman
-  const managerImg = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158";
+  // Use the uploaded image for Marina Whitman
+  const managerImg = "/lovable-uploads/80b558e8-c691-4857-bb86-04d01efc65ac.png";
 
   const handleLogout = () => {
     logout();
