@@ -1,6 +1,8 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
+  Home,
   Briefcase, 
   FileText, 
   MessageSquare, 
@@ -21,13 +23,21 @@ const navItems = [
 
 const Sidebar = () => {
   const [activeItem, setActiveItem] = useState('Deals');
+  const navigate = useNavigate();
+
+  const topItems = navItems;
+  const homeItem = {
+    icon: Home,
+    label: 'Home',
+    active: false
+  };
   
   return (
     <aside className="w-64 border-r border-gray-200 bg-white">
       <div className="flex flex-col h-full">
         <nav className="flex-1 px-4 py-6">
           <ul className="space-y-1">
-            {navItems.map((item) => (
+            {topItems.map((item) => (
               <li key={item.label}>
                 <button
                   className={cn(
@@ -46,18 +56,14 @@ const Sidebar = () => {
           </ul>
         </nav>
         
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                <span className="text-sm font-medium">JD</span>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium">John Doe</p>
-                <p className="text-xs text-gray-500">Agent</p>
-              </div>
-            </div>
-          </div>
+        <div className="mt-auto px-4 py-4 border-t border-gray-200">
+          <button
+            className="flex items-center w-full px-4 py-3 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50"
+            onClick={() => navigate('/')}
+          >
+            <Home className="h-5 w-5 mr-3" />
+            Home
+          </button>
         </div>
       </div>
     </aside>

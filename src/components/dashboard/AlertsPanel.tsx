@@ -1,7 +1,14 @@
 
-import { AlertTriangle, FileText, Calendar } from "lucide-react";
+import { AlertTriangle, FileText, Calendar, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Alert } from "@/pages/dashboard/DashboardPage";
+import { getAgenticActions } from "@/utils/agenticActions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type AlertsPanelProps = {
   alerts: Alert[];
@@ -26,13 +33,13 @@ const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
   const getBgColor = (severity: Alert['severity']) => {
     switch (severity) {
       case 'high':
-        return "bg-red-50";
+        return "bg-red-50 border-red-300";
       case 'medium':
-        return "bg-amber-50";
+        return "bg-amber-50 border-amber-300";
       case 'low':
-        return "bg-blue-50";
+        return "bg-blue-50 border-blue-300";
       default:
-        return "bg-gray-50";
+        return "bg-gray-50 border-gray-300";
     }
   };
   
@@ -47,7 +54,6 @@ const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
       } else {
         navigate(`/deals/${alert.dealId}`);
       }
-      console.info(`Navigating to deal ${alert.dealId}`);
     }
   };
 
@@ -59,15 +65,35 @@ const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
         {alerts.map((alert) => (
           <div
             key={alert.id}
-            className={`flex items-start p-3 rounded-md cursor-pointer transition-colors hover:bg-opacity-80 ${getBgColor(alert.severity)}`}
-            onClick={() => handleAlertClick(alert)}
+            className={`group flex items-start justify-between p-3 rounded-md border ${getBgColor(alert.severity)}`}
           >
-            <div className="mr-3 mt-0.5">
-              {getAlertIcon(alert.type)}
+            <div className="flex items-start flex-1" onClick={() => handleAlertClick(alert)}>
+              <div className="mr-3 mt-0.5">
+                {getAlertIcon(alert.type)}
+              </div>
+              <div>
+                <p className="text-sm">{alert.message}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm">{alert.message}</p>
-            </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Sparkles 
+                  size={18} 
+                  className="text-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition ml-2 shrink-0"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                {getAgenticActions(alert).map((action) => (
+                  <DropdownMenuItem 
+                    key={action}
+                    onClick={() => alert(`🔧 (prototype) Nitidina will: "${action}" for alert ${alert.id}`)}
+                  >
+                    {action}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         ))}
       </div>
