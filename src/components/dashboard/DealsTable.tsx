@@ -1,6 +1,5 @@
-
 import { useNavigate } from "react-router-dom";
-import type { Deal } from "@/types";
+import type { Deal } from "@/pages/dashboard/DashboardPage";
 
 type DealsTableProps = {
   deals: Deal[];

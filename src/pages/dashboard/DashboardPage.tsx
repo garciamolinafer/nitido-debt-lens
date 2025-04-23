@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Calendar, LayoutGrid, MessageSquare, Bot, Network, Settings } from "lucide-react";
 
+import AppHeader from "@/components/layout/AppHeader";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
@@ -36,6 +37,8 @@ const DashboardPage = () => {
   /* ---------------- render ---------------- */
   return (
     <div className="flex flex-col h-screen">
+      <AppHeader />
+
       <div className="flex flex-1 overflow-hidden">
         {/* LEFT SIDEBAR – reuse existing component */}
         <Sidebar
