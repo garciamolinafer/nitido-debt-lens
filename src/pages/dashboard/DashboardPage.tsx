@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Calendar, LayoutGrid, MessageSquare, Bot, Network, Settings } from "lucide-react";
 
-import AppHeader from "@/components/layout/AppHeader";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
@@ -34,25 +33,21 @@ const DashboardPage = () => {
     agendaInfo: "your Outlook agenda has been reconciled with portfolio tasks",
   });
 
-  const sidebarButtons = [
-    { id: "agenda", label: "Agenda", icon: Calendar, tooltip: "Scheduler of tasks integrated with your work calendar" },
-    { id: "dashboard", label: "Dashboard", icon: LayoutGrid, tooltip: "Portfolio overview", isActive: true },
-    { id: "chats", label: "Nítido Chats", icon: MessageSquare, tooltip: "All team chats assisted by Nitidina" },
-    { id: "assistant", label: "AI Assistant", icon: Bot, tooltip: "Full chatGPT-like page" },
-    { id: "agents", label: "AI Agents", icon: Network, tooltip: "Configure agentic tasks" },
-    { id: "setup", label: "Setup", icon: Settings, tooltip: "Platform preferences" },
-  ];
-
   /* ---------------- render ---------------- */
   return (
     <div className="flex flex-col h-screen">
-      <AppHeader />
-
       <div className="flex flex-1 overflow-hidden">
-        {/* LEFT SIDEBAR */}
+        {/* LEFT SIDEBAR – reuse existing component */}
         <Sidebar
           collapsed={chatOpen} /* auto-minimise when chat open */
-          buttons={sidebarButtons}
+          buttons={[
+            { id: "agenda", label: "Agenda", icon: Calendar, tooltip: "Scheduler of tasks integrated with your work calendar" },
+            { id: "dashboard", label: "Dashboard", icon: LayoutGrid, tooltip: "Portfolio overview", isActive: true },
+            { id: "chats", label: "Nítido Chats", icon: MessageSquare, tooltip: "All team chats assisted by Nitidina" },
+            { id: "assistant", label: "AI Assistant", icon: Bot, tooltip: "Full chatGPT-like page" },
+            { id: "agents", label: "AI Agents", icon: Network, tooltip: "Configure agentic tasks" },
+            { id: "setup", label: "Setup", icon: Settings, tooltip: "Platform preferences" },
+          ]}
         />
 
         {/* MAIN */}
