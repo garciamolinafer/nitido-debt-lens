@@ -1,9 +1,10 @@
-
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Paperclip, Send, X, ArrowUpSquare, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -26,14 +27,19 @@ interface AIChatAssistantPanelProps {
   };
 }
 
+const getGreetingForRoute = (pathname: string): string => {
+  const section = pathname.split('/')[1] || 'home';
+  return `Marina, let me know how can I assist you in ${section === 'home' ? 'the command center' : `this ${section} section`}`;
+};
+
 const AIChatAssistantPanel = ({ isOpen, onClose, context }: AIChatAssistantPanelProps) => {
+  const location = useLocation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Mock documents for contextual reference
   const availableDocuments = [
     { id: "doc1", name: "Credit Agreement.pdf" },
     { id: "doc2", name: "Financial Report Q4 2024.xlsx" },
@@ -41,35 +47,26 @@ const AIChatAssistantPanel = ({ isOpen, onClose, context }: AIChatAssistantPanel
     { id: "doc4", name: "Amendment Agreement.pdf" },
   ];
 
-  // Scroll to bottom of messages when new message added
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // Initialize with welcome message
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      let welcomeMessage = "Hello! I'm your Nítido AI assistant. How can I help you today?";
-      
-      if (context?.dealId) {
-        welcomeMessage = `Hello! I'm your Nítido AI assistant. You're currently viewing Deal ${context.dealId}. How can I help you with this deal?`;
-      }
-      
       setMessages([
         {
           id: "welcome",
-          content: welcomeMessage,
+          content: getGreetingForRoute(location.pathname),
           sender: "ai",
           timestamp: new Date()
         }
       ]);
     }
-  }, [isOpen, context, messages.length]);
+  }, [isOpen, messages.length, location.pathname]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const sendMessage = () => {
     if (!input.trim()) return;
     
-    // Add user message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       content: input,
@@ -81,7 +78,6 @@ const AIChatAssistantPanel = ({ isOpen, onClose, context }: AIChatAssistantPanel
     setInput("");
     setIsLoading(true);
     
-    // Simulate AI response with some delay
     setTimeout(() => {
       generateAIResponse(userMessage);
     }, 1500);
@@ -91,7 +87,6 @@ const AIChatAssistantPanel = ({ isOpen, onClose, context }: AIChatAssistantPanel
     const messageContent = userMessage.content.toLowerCase();
     let aiResponse: Message;
     
-    // Some contextual responses based on content
     if (messageContent.includes("ebitda") || messageContent.includes("financial")) {
       aiResponse = {
         id: `ai-${Date.now()}`,
@@ -165,7 +160,6 @@ Loan Administrator`,
       };
     }
     else {
-      // Generic response when no specific context matched
       aiResponse = {
         id: `ai-${Date.now()}`,
         content: "I understand you're asking about " + userMessage.content.split(" ").slice(0, 3).join(" ") + "... To provide a more accurate response, could you specify which aspect of the deal you're interested in? I can help with financials, covenants, document analysis, or draft communications.",
@@ -176,7 +170,6 @@ Loan Administrator`,
     
     setMessages(prev => [...prev, aiResponse]);
     setIsLoading(false);
-    // Reset selected document after response
     setSelectedDocument(null);
   };
   
@@ -197,16 +190,23 @@ Loan Administrator`,
   if (!isOpen) return null;
 
   return (
-    <div className="fixed right-0 top-0 h-full w-full md:w-1/3 bg-white border-l border-gray-200 shadow-lg z-40 flex flex-col">
-      {/* Header */}
+    <div className="fixed top-16 right-0 h-[calc(100vh-4rem)] w-full md:w-1/3 bg-white border-l border-gray-200 shadow-lg z-40 flex flex-col">
       <div className="h-16 border-b border-gray-200 px-4 flex items-center justify-between">
-        <h2 className="font-semibold">Nítido AI Assistant</h2>
+        <div className="flex items-center gap-2">
+          <Avatar className="h-8 w-8">
+            <AvatarImage
+              src="/lovable-uploads/e985ead7-bf16-4994-b9ef-1a26e9fc4d8b.png"
+              alt="Nitidina"
+            />
+            <AvatarFallback>NA</AvatarFallback>
+          </Avatar>
+          <h2 className="font-semibold">Nitidina</h2>
+        </div>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-5 w-5" />
         </Button>
       </div>
       
-      {/* Context display if any */}
       {(context?.dealId || selectedDocument) && (
         <div className="bg-gray-50 px-4 py-2 border-b border-gray-200 text-sm flex items-center">
           <span className="text-gray-500 mr-2">Context:</span>
@@ -230,7 +230,6 @@ Loan Administrator`,
         </div>
       )}
       
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <div
@@ -279,14 +278,12 @@ Loan Administrator`,
         <div ref={messagesEndRef}></div>
       </div>
       
-      {/* Document selection dropdown */}
       {selectedDocument && (
         <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
           <p className="text-xs text-gray-500">Using document context: {selectedDocument}</p>
         </div>
       )}
       
-      {/* Input area */}
       <div className="border-t border-gray-200 p-4">
         <div className="flex mb-2">
           <div className="relative">
