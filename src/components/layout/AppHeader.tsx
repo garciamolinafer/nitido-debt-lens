@@ -20,8 +20,9 @@ const languages = [
 const AppHeader: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  // Dummy manager image - replace this path if you upload a real picture
-  const managerImg = "/placeholder.svg";
+  
+  // Use a professional-looking image for Marina Whitman
+  const managerImg = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158";
 
   const handleLogout = () => {
     logout();
@@ -64,7 +65,7 @@ const AppHeader: React.FC = () => {
               <span className="text-sm font-medium text-gray-800">Marina Whitman</span>
               <img
                 src={managerImg}
-                alt="Manager"
+                alt="Marina Whitman"
                 className="h-8 w-8 rounded-full object-cover border border-gray-200"
               />
             </div>
