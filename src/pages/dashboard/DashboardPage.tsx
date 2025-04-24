@@ -1,11 +1,13 @@
-
 import { useState } from "react";
-import { Home } from "lucide-react";
+import { Home, Bot } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import DealStats from "@/components/dashboard/DealStats";
 import DealSearch from "@/components/dashboard/DealSearch";
+import AgentsChatPanel from "@/components/dashboard/AgentsChatPanel";
+import NitidinaPanel from "@/components/NitidinaPanel";
 
 export type Deal = {
   id: string;
@@ -89,6 +91,8 @@ const DashboardPage = () => {
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [chatOpen, setChatOpen] = useState(false);
+  const [agentsChatOpen, setAgentsChatOpen] = useState(false);
 
   const filteredDeals = deals.filter(deal =>
     deal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -112,6 +116,46 @@ const DashboardPage = () => {
           <AlertsPanel alerts={alerts} />
         </div>
       </div>
+
+      <div className="fixed bottom-6 right-6 flex gap-4 z-50">
+        {!agentsChatOpen && (
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-10 w-10 rounded-full bg-yellow-200 hover:bg-yellow-300"
+            onClick={() => {
+              setAgentsChatOpen(true);
+              setChatOpen(false);
+            }}
+          >
+            <Bot className="h-5 w-5" />
+          </Button>
+        )}
+        {!chatOpen && (
+          <NitidinaPanel
+            isOpen={chatOpen}
+            onToggle={() => {
+              setChatOpen(true);
+              setAgentsChatOpen(false);
+            }}
+            showCloseButton={true}
+          />
+        )}
+      </div>
+
+      <AgentsChatPanel
+        open={agentsChatOpen}
+        onClose={() => setAgentsChatOpen(false)}
+      />
+      
+      <NitidinaPanel
+        isOpen={chatOpen}
+        onToggle={() => {
+          setChatOpen(true);
+          setAgentsChatOpen(false);
+        }}
+        showCloseButton={true}
+      />
     </div>
   );
 };
