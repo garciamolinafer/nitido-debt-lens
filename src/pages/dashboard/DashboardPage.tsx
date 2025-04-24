@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Home, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
@@ -118,20 +119,27 @@ const DashboardPage = () => {
       </div>
 
       <div className="fixed bottom-6 right-6 flex gap-4 z-50">
-        {!agentsChatOpen && (
+        {!agentsChatOpen && !chatOpen && (
           <Button
             variant="secondary"
             size="icon"
-            className="h-10 w-10 rounded-full bg-yellow-200 hover:bg-yellow-300"
+            className="h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300"
             onClick={() => {
               setAgentsChatOpen(true);
               setChatOpen(false);
             }}
           >
-            <Bot className="h-5 w-5" />
+            <Avatar className="h-8 w-8">
+              <AvatarImage 
+                src="/lovable-uploads/061655cf-888e-41f2-857a-940a2b0f66c5.png" 
+                alt="Nítido Agents" 
+                className="object-contain"
+              />
+            </Avatar>
           </Button>
         )}
-        {!chatOpen && (
+        
+        {!chatOpen && !agentsChatOpen && (
           <NitidinaPanel
             isOpen={chatOpen}
             onToggle={() => {
