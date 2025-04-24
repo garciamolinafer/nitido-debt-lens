@@ -1,122 +1,116 @@
 
 import React, { useEffect, useState } from "react";
-import { Bot, X } from "lucide-react";
+import { X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import clsx from "clsx";
+import { Input } from "@/components/ui/input";
 
-type Message = {
-  id: number;
-  from: "user" | "ai";
-  text: string;
-};
-
-interface AgentsChatPanelProps {
+export interface AgentsChatPanelProps {
   open: boolean;
   onClose: () => void;
 }
 
-export default function AgentsChatPanel({ open, onClose }: AgentsChatPanelProps) {
+type Message = {
+  id: number;
+  from: "ai" | "user";
+  text: string;
+};
+
+const AgentsChatPanel: React.FC<AgentsChatPanelProps> = ({ open, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [hasUserSentMessage, setHasUserSentMessage] = useState(false);
+  const [hasReplied, setHasReplied] = useState(false);
 
   useEffect(() => {
-    if (open && messages.length === 0) {
-      setMessages([
-        {
-          id: 1,
-          from: "ai",
-          text: "Marina, let me know what kind of action you'd like me to process for you."
-        }
-      ]);
+    if (open) {
+      setMessages([{
+        id: Date.now(),
+        from: "ai",
+        text: "Marina, let me know what kind of action you'd like me to process for you."
+      }]);
+      setInput("");
+      setHasReplied(false);
+    } else {
+      setMessages([]);
     }
-  }, [open, messages.length]);
+  }, [open]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const sendUserMessage = () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
 
-    const userMessage = {
-      id: messages.length + 1,
+    const userMsg: Message = {
+      id: Date.now(),
       from: "user",
-      text: input.trim()
+      text: trimmed
     };
-
-    setMessages(prev => [...prev, userMessage]);
+    
+    setMessages(prev => [...prev, userMsg]);
     setInput("");
 
-    if (!hasUserSentMessage) {
-      setHasUserSentMessage(true);
+    if (!hasReplied) {
+      setHasReplied(true);
+      const aiMsg: Message = {
+        id: Date.now() + 1,
+        from: "ai",
+        text: "Understood. I will now show you the proposed process that I will follow:"
+      };
+      
       setTimeout(() => {
-        setMessages(prev => [
-          ...prev,
-          {
-            id: prev.length + 1,
-            from: "ai",
-            text: "Understood. I will now show you the proposed process that I will follow:"
-          }
-        ]);
-      }, 1000);
+        setMessages(prev => [...prev, aiMsg]);
+      }, 400);
     }
   };
 
+  if (!open) return null;
+
   return (
-    <aside
-      className={clsx(
-        "fixed top-0 right-0 h-[70vh] w-full sm:max-w-md transition-transform z-50 shadow-lg",
-        open ? "translate-x-0" : "translate-x-full"
-      )}
-    >
-      <Card className="flex flex-col h-full rounded-none">
-        <div className="flex items-center justify-between border-b px-4 py-3">
-          <div className="flex items-center gap-2">
-            <Bot className="h-5 w-5" />
-            <h3 className="font-medium">Nítido Agents</h3>
-          </div>
+    <aside className="fixed top-0 right-0 h-[70vh] w-full sm:max-w-md transition-transform z-50 shadow-lg translate-x-0">
+      <div className="flex flex-col h-full bg-white border rounded-none shadow-xl">
+        {/* Header */}
+        <div className="flex items-center justify-between p-3 border-b">
+          <span className="font-semibold">Nítido Agents</span>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-5 w-5" />
           </Button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+          {messages.map((m) => (
             <div
-              key={message.id}
-              className={clsx(
-                "max-w-[80%]",
-                message.from === "user" ? "ml-auto" : ""
-              )}
+              key={m.id}
+              className={`flex ${m.from === "ai" ? "justify-start" : "justify-end"}`}
             >
               <div
-                className={clsx(
-                  "rounded-lg px-3 py-2 text-sm",
-                  message.from === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted"
-                )}
+                className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
+                  m.from === "ai"
+                    ? "bg-gray-100 text-gray-900"
+                    : "bg-primary text-primary-foreground"
+                }`}
               >
-                {message.text}
+                {m.text}
               </div>
             </div>
           ))}
         </div>
 
-        <div className="border-t p-4">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Ask Nítido Agents …"
-              className="flex-1 rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <Button size="sm" onClick={handleSend} disabled={!input.trim()}>
-              Send
-            </Button>
-          </div>
+        {/* Composer */}
+        <div className="p-3 border-t flex items-center gap-2">
+          <Input
+            placeholder="Ask Nítido Agents…"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") sendUserMessage();
+            }}
+          />
+          <Button size="icon" onClick={sendUserMessage}>
+            <Send className="h-4 w-4" />
+          </Button>
         </div>
-      </Card>
+      </div>
     </aside>
   );
-}
+};
+
+export default AgentsChatPanel;
