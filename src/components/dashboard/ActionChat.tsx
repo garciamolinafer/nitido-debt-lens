@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -81,7 +82,7 @@ export default function ActionChat({ alert, onClose }: Props) {
       <div className="flex items-center justify-between px-4 py-2 border-b">
         <div className="flex items-center gap-2">
           <Avatar className="h-6 w-6">
-            <AvatarImage src="/lovable-uploads/b8d396f2-3eda-4bb3-8d5b-c9374425a468.png" alt="Nítido Agent" />
+            <AvatarImage src="/lovable-uploads/7344e249-19ec-4ad4-b902-c4c943d3ab00.png" alt="Nítido Agent" />
           </Avatar>
           <h3 className="font-semibold">Nítido&nbsp;Agents</h3>
         </div>
