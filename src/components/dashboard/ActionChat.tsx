@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -73,7 +72,10 @@ export default function ActionChat({ alert, onClose }: Props) {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 md:w-96 rounded-xl shadow-lg bg-white border">
+    <div
+      className="fixed bottom-20 right-4 w-80 md:w-96 rounded-xl shadow-lg bg-white border"
+      style={{ maxHeight: 'calc(100vh - 6.5rem)' }}
+    >
       {/* HEADER */}
       <div className="flex items-center justify-between px-4 py-2 border-b">
         <h3 className="font-semibold">Nítido&nbsp;Agents</h3>
@@ -88,7 +90,7 @@ export default function ActionChat({ alert, onClose }: Props) {
       </div>
 
       {/* CHAT BODY */}
-      <div className="p-4 space-y-2 h-72 overflow-y-auto text-sm">
+      <div className="p-4 space-y-2 overflow-y-auto text-sm flex flex-col grow">
         {messages.map((m, idx) => (
           <div
             key={idx}
@@ -149,4 +151,3 @@ export default function ActionChat({ alert, onClose }: Props) {
     </div>
   );
 }
-
