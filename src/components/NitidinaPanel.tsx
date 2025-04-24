@@ -1,8 +1,8 @@
+
 import { useState, useEffect, useRef } from "react";
-import { X } from "lucide-react";
+import { X, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import NitidoAgentsPanel from "./NitidoAgentsPanel";
 
 type MessageType = {
   sender: "user" | "nitidina";
@@ -32,12 +32,10 @@ interface NitidinaPanelProps {
 
 const NITIDINA_AVATAR_IMG = "/lovable-uploads/8e1f1c48-bd1c-47d6-b0dd-7682f9789473.png";
 const NITIDINA_AVATAR_ALT = "Nitidina Assistant Avatar";
-const NITIDO_AGENTS_AVATAR = "/lovable-uploads/7344e249-19ec-4ad4-b902-c4c943d3ab00.png";
 
 const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPanelProps) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [agentsOpen, setAgentsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -89,15 +87,12 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
     }
   };
 
-  const toggleAgents = () => {
-    setAgentsOpen(!agentsOpen);
-  };
-
   return (
     <>
       {/* Main Panel - visible when open */}
       {isOpen && (
         <aside className="fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 translate-x-0">
+          {/* Header */}
           <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
@@ -127,6 +122,7 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
             )}
           </div>
 
+          {/* Messages container */}
           <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-white">
             {messages.map((message, index) => (
               <div
@@ -149,6 +145,7 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Input area */}
           <div className="border-t p-3 bg-white">
             <div className="flex items-center gap-2">
               <input
@@ -174,54 +171,27 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
         </aside>
       )}
       
-      {/* Floating buttons - visible when respective panels are closed */}
-      {!isOpen && !agentsOpen && (
-        <div className="fixed right-6 top-16 z-40 flex gap-2">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-10 w-10 rounded-full bg-yellow-200 hover:bg-yellow-300 shadow-lg"
-            onClick={toggleAgents}
-            aria-label="Open Nítido Agents Chat"
-          >
-            <Avatar className="h-8 w-8 bg-yellow-200">
-              <AvatarImage
-                className="object-cover"
-                src={NITIDO_AGENTS_AVATAR}
-                alt="Nítido Agents"
-              />
-              <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
-                NA
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-10 w-10 rounded-full bg-yellow-200 hover:bg-yellow-300 shadow-lg"
-            onClick={onToggle}
-            aria-label="Open Nitidina Chat"
-          >
-            <Avatar className="h-8 w-8 bg-yellow-200">
-              <AvatarImage
-                className="object-cover"
-                src={NITIDINA_AVATAR_IMG}
-                alt={NITIDINA_AVATAR_ALT}
-              />
-              <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
-                MW
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-        </div>
+      {/* Floating button - visible when panel is closed */}
+      {!isOpen && (
+        <Button
+          variant="secondary"
+          size="icon"
+          className="fixed right-6 top-16 z-40 h-10 w-10 rounded-full bg-yellow-200 hover:bg-yellow-300 shadow-lg"
+          onClick={onToggle}
+          aria-label="Open Nitidina Chat"
+        >
+          <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
+            <AvatarImage
+              className="object-cover"
+              src={NITIDINA_AVATAR_IMG}
+              alt={NITIDINA_AVATAR_ALT}
+            />
+            <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
+              MW
+            </AvatarFallback>
+          </Avatar>
+        </Button>
       )}
-
-      {/* Nítido Agents Panel */}
-      <NitidoAgentsPanel
-        isOpen={agentsOpen}
-        onToggle={toggleAgents}
-        showCloseButton={true}
-      />
     </>
   );
 };

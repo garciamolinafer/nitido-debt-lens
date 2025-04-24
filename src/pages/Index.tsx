@@ -1,8 +1,12 @@
+
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, LayoutGrid, MessageSquare, Bot, Network, Settings } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 import NavTile from "@/components/NavTile";
+import NitidinaPanel from "@/components/NitidinaPanel";
 
 interface NavTileData {
   id: string;
@@ -54,10 +58,17 @@ const navTiles: NavTileData[] = [
 
 const Index = () => {
   const navigate = useNavigate();
-  const pendingAgenda = 2;
+  const [nitidinaOpen, setNitidinaOpen] = useState(true);
+
+  const pendingAgenda = 2; // Dummy state for pending agenda items
 
   const handleTileClick = (id: string) => {
     navigate(`/${id}`);
+  };
+
+  // Toggle function for Nitidina panel
+  const toggleNitidina = () => {
+    setNitidinaOpen(!nitidinaOpen);
   };
 
   return (
@@ -69,7 +80,12 @@ const Index = () => {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        className={cn(
+          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-300 ease-in-out",
+          nitidinaOpen ? "sm:mr-96" : "" // Add right margin if Nitidina is open for overlap on desktop
+        )}
+      >
         {navTiles.map((tile) => (
           <NavTile
             key={tile.id}
@@ -83,6 +99,12 @@ const Index = () => {
           />
         ))}
       </div>
+
+      <NitidinaPanel 
+        isOpen={nitidinaOpen}
+        onToggle={toggleNitidina}
+        showCloseButton={true}
+      />
     </div>
   );
 };

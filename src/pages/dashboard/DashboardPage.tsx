@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Home } from "lucide-react";
 import Sidebar from "@/components/dashboard/Sidebar";
@@ -5,7 +6,6 @@ import DealsTable from "@/components/dashboard/DealsTable";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import DealStats from "@/components/dashboard/DealStats";
 import DealSearch from "@/components/dashboard/DealSearch";
-import NitidinaPanel from "@/components/NitidinaPanel";
 
 export type Deal = {
   id: string;
@@ -89,16 +89,11 @@ const DashboardPage = () => {
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [nitidinaOpen, setNitidinaOpen] = useState(true);
 
   const filteredDeals = deals.filter(deal =>
     deal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     deal.borrower.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const toggleNitidina = () => {
-    setNitidinaOpen(!nitidinaOpen);
-  };
 
   return (
     <div className="flex h-screen bg-white overflow-hidden">
@@ -117,12 +112,6 @@ const DashboardPage = () => {
           <AlertsPanel alerts={alerts} />
         </div>
       </div>
-
-      <NitidinaPanel 
-        isOpen={nitidinaOpen}
-        onToggle={toggleNitidina}
-        showCloseButton={true}
-      />
     </div>
   );
 };
