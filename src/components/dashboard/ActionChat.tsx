@@ -1,109 +1,152 @@
+
 import { useState } from "react";
-import { X, Send } from "lucide-react";
-import { Alert } from "./AlertsPanel";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import clsx from "clsx";
+import { Alert } from "@/pages/dashboard/DashboardPage";
 
-interface Props {
+type Props = {
   alert: Alert;
   onClose: () => void;
-}
+};
 
+/** Draft helper – adapt to your real suggestion logic */
 const suggestedActions = (a: Alert): string[] => {
   switch (a.type) {
     case "document":
       return [
-        "Generate a summary of the documents and propose actions",
-        "Share the documents with lenders",
-        "Review and auto-extract key data into the deal site",
-        "Open a chat to resolve outstanding document requests",
+        "Generate a summary with recommended actions",
+        "Share the documents with the lenders",
+        "Review & extract relevant info to the deal site",
+        "Open a chat to discuss other requests",
       ];
     case "covenant":
       return [
-        "Draft waiver request email to lenders",
-        "Generate impact analysis of the breach",
-        "Prepare covenant cure plan with timeline",
+        "Draft a waiver letter",
+        "Notify lenders & request instructions",
+        "Analyse breach impact on all tranches",
+        "Open follow-up chat",
       ];
     case "payment":
       return [
-        "Draft reminder notice to borrower",
-        "Auto-generate interest invoice for lenders",
-        "Simulate payment scenarios for next quarter",
+        "Send payment reminder to borrower",
+        "Draft interest-notice e-mail to lenders",
+        "Recalculate accrued interest projection",
+        "Open follow-up chat",
       ];
     default:
-      return ["Suggest next best action"];
+      return ["Open follow-up chat"];
   }
 };
 
-const ActionChat = ({ alert, onClose }: Props) => {
+export default function ActionChat({ alert, onClose }: Props) {
+  /* message objects MUST keep `"ai" | "user"` literal types */
   const [messages, setMessages] = useState<
     { from: "ai" | "user"; text: string }[]
   >([
-    { from: "ai", text: `Hi! I detected: "${alert.message}". Here are some ways I can help:` } as const,
-    ...suggestedActions(alert).map(
-      (t) => ({ from: "ai", text: `• ${t}` } as const)
-    ),
+    {
+      from: "ai",
+      text: `I detected: "${alert.message}". How can I help? Select an option below or ask me directly.`,
+    } as const,
   ]);
-  const [draft, setDraft] = useState("");
 
-  const send = (text: string) => {
+  /** Options that are still selectable */
+  const [options, setOptions] = useState<string[]>(suggestedActions(alert));
+
+  /* Called when user clicks a quick-action or submits free text */
+  const handleSubmit = (text: string) => {
     if (!text.trim()) return;
+
+    /* 1) echo user */
     setMessages((m) => [...m, { from: "user", text } as const]);
-    setDraft("");
-    // ➜ In real app we'd call backend agent.  Prototype: push canned reply
+
+    /* 2) fake AI processing & reply */
     setTimeout(() => {
       setMessages((m) => [
         ...m,
-        { from: "ai", text: "Got it! (AI agent would execute that here)" } as const,
+        {
+          from: "ai",
+          text: `Got it! (Here the Nítido agent would execute "${text}").`,
+        } as const,
       ]);
-    }, 800);
+    }, 600);
   };
 
   return (
-    <div className="fixed bottom-6 right-6 w-80 h-96 bg-white shadow-xl border rounded-lg flex flex-col z-50">
-      <div className="px-3 py-2 border-b flex justify-between items-center">
-        <span className="font-semibold text-sm">Nitidina – Agentic Help</span>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <X size={16} />
+    <div className="fixed bottom-4 right-4 w-80 md:w-96 rounded-xl shadow-lg bg-white border">
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-4 py-2 border-b">
+        <h3 className="font-semibold">Nítido&nbsp;Agents</h3>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <X size={18} />
         </Button>
       </div>
 
-      <div className="flex-1 overflow-auto px-3 py-2 space-y-2">
-        {messages.map((m, i) => (
+      {/* CHAT BODY */}
+      <div className="p-4 space-y-2 h-72 overflow-y-auto text-sm">
+        {messages.map((m, idx) => (
           <div
-            key={i}
-            className={clsx(
-              "text-sm px-3 py-2 rounded-md max-w-[90%]",
+            key={idx}
+            className={`rounded-lg px-3 py-2 ${
               m.from === "ai"
-                ? "bg-gray-100 text-gray-800 self-start"
-                : "bg-primary text-white self-end"
-            )}
+                ? "bg-gray-100 text-gray-900"
+                : "bg-black text-white self-end"
+            }`}
           >
             {m.text}
           </div>
         ))}
+
+        {/* QUICK-ACTION BUTTONS (only while options remain) */}
+        {options.length > 0 && (
+          <div className="space-y-2">
+            {options.map((opt) => (
+              <Button
+                key={opt}
+                variant="outline"
+                size="sm"
+                className="w-full justify-start"
+                onClick={() => {
+                  handleSubmit(opt);
+                  setOptions((o) => o.filter((x) => x !== opt));
+                }}
+              >
+                {opt}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
 
+      {/* INPUT */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          send(draft);
+          const txt = (e.currentTarget.elements.namedItem(
+            "msg"
+          ) as HTMLInputElement).value;
+          (e.currentTarget.elements.namedItem("msg") as HTMLInputElement).value =
+            "";
+          handleSubmit(txt);
         }}
-        className="p-2 border-t flex items-center space-x-2"
+        className="flex items-center gap-2 border-t px-3 py-2"
       >
         <Input
-          placeholder="Ask Nitidina..."
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          className="text-sm"
+          name="msg"
+          placeholder="Ask Nítido Agents…"
+          className="flex-1"
+          autoComplete="off"
         />
-        <Button type="submit" size="icon">
-          <Send size={16} />
+        <Button type="submit" size="sm">
+          Send
         </Button>
       </form>
     </div>
   );
-};
+}
 
-export default ActionChat;
