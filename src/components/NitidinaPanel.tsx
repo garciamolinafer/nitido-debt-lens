@@ -1,8 +1,8 @@
+
 import { useState, useEffect, useRef } from "react";
 import { X, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import NitidoAgentsPanel from "./ai/NitidoAgentsPanel";
 
 type MessageType = {
   sender: "user" | "nitidina";
@@ -32,12 +32,10 @@ interface NitidinaPanelProps {
 
 const NITIDINA_AVATAR_IMG = "/lovable-uploads/8e1f1c48-bd1c-47d6-b0dd-7682f9789473.png";
 const NITIDINA_AVATAR_ALT = "Nitidina Assistant Avatar";
-const NITIDO_AGENTS_IMG = "/lovable-uploads/7344e249-19ec-4ad4-b902-c4c943d3ab00.png";
 
 const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPanelProps) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [agentsPanelOpen, setAgentsPanelOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -96,34 +94,18 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
         <aside className="fixed bottom-0 right-0 top-16 z-40 flex flex-col bg-white shadow-lg transition-all duration-300 w-full sm:w-80 md:w-96 translate-x-0">
           {/* Header */}
           <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
-                  <AvatarImage
-                    className="object-cover"
-                    src={NITIDINA_AVATAR_IMG}
-                    alt={NITIDINA_AVATAR_ALT}
-                  />
-                  <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
-                    MW
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="font-medium text-base">Nitidina</h3>
-              </div>
-              
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setAgentsPanelOpen(!agentsPanelOpen)}
-                className="p-0 h-8 w-8"
-              >
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={NITIDO_AGENTS_IMG}
-                    alt="Nítido Agents"
-                  />
-                </Avatar>
-              </Button>
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
+                <AvatarImage
+                  className="object-cover"
+                  src={NITIDINA_AVATAR_IMG}
+                  alt={NITIDINA_AVATAR_ALT}
+                />
+                <AvatarFallback className="relative bg-yellow-200 text-primary font-bold">
+                  MW
+                </AvatarFallback>
+              </Avatar>
+              <h3 className="font-medium text-base">Nitidina</h3>
             </div>
             {showCloseButton ? (
               <Button
@@ -210,12 +192,6 @@ const NitidinaPanel = ({ isOpen, onToggle, showCloseButton = false }: NitidinaPa
           </Avatar>
         </Button>
       )}
-      
-      {/* Nítido Agents Panel */}
-      <NitidoAgentsPanel
-        isOpen={agentsPanelOpen}
-        onClose={() => setAgentsPanelOpen(false)}
-      />
     </>
   );
 };
