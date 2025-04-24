@@ -1,14 +1,14 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { 
-  Home,
   Briefcase, 
   FileText, 
   MessageSquare, 
   Bot, 
   Settings,
-  UserCog
+  UserCog,
+  Home
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -46,14 +46,19 @@ const Sidebar = () => {
                 </button>
               </li>
             ))}
-            <li>
-              <button
-                className="flex items-center w-full px-4 py-3 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50"
-                onClick={() => navigate('/')}
+            <li className="mt-auto">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center px-4 py-2 text-sm hover:bg-gray-50",
+                    isActive && "font-semibold"
+                  )
+                }
               >
-                <Home className="h-5 w-5 mr-3" />
+                <Home size={18} className="mr-2" />
                 Home
-              </button>
+              </NavLink>
             </li>
           </ul>
         </nav>
