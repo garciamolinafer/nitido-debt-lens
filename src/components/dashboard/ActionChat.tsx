@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { X, Send } from "lucide-react";
 import { Alert } from "./AlertsPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import clsx from "clsx";
 
 interface Props {
   alert: Alert;
@@ -41,23 +40,22 @@ const ActionChat = ({ alert, onClose }: Props) => {
   const [messages, setMessages] = useState<
     { from: "ai" | "user"; text: string }[]
   >([
-    {
-      from: "ai",
-      text: `Hi! I detected: "${alert.message}". Here are some ways I can help:`,
-    },
-    ...suggestedActions(alert).map((t) => ({ from: "ai", text: `• ${t}` })),
+    { from: "ai", text: `Hi! I detected: "${alert.message}". Here are some ways I can help:` } as const,
+    ...suggestedActions(alert).map(
+      (t) => ({ from: "ai", text: `• ${t}` } as const)
+    ),
   ]);
   const [draft, setDraft] = useState("");
 
   const send = (text: string) => {
     if (!text.trim()) return;
-    setMessages((m) => [...m, { from: "user", text }]);
+    setMessages((m) => [...m, { from: "user", text } as const]);
     setDraft("");
-    // Prototype response
+    // ➜ In real app we'd call backend agent.  Prototype: push canned reply
     setTimeout(() => {
       setMessages((m) => [
         ...m,
-        { from: "ai", text: "Got it! (AI agent would execute that here)" },
+        { from: "ai", text: "Got it! (AI agent would execute that here)" } as const,
       ]);
     }, 800);
   };
@@ -75,7 +73,7 @@ const ActionChat = ({ alert, onClose }: Props) => {
         {messages.map((m, i) => (
           <div
             key={i}
-            className={cn(
+            className={clsx(
               "text-sm px-3 py-2 rounded-md max-w-[90%]",
               m.from === "ai"
                 ? "bg-gray-100 text-gray-800 self-start"
