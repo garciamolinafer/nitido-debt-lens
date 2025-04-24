@@ -123,10 +123,9 @@ const DashboardPage = () => {
           <Button
             variant="secondary"
             size="icon"
-            className="h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300"
+            className="h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 absolute right-0"
             onClick={() => {
               setAgentsChatOpen(true);
-              setChatOpen(false);
             }}
           >
             <Avatar className="h-8 w-8">
@@ -140,14 +139,22 @@ const DashboardPage = () => {
         )}
         
         {!chatOpen && !agentsChatOpen && (
-          <NitidinaPanel
-            isOpen={chatOpen}
-            onToggle={() => {
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-10 w-10 rounded-full bg-yellow-200 hover:bg-yellow-300 absolute right-16"
+            onClick={() => {
               setChatOpen(true);
-              setAgentsChatOpen(false);
             }}
-            showCloseButton={true}
-          />
+          >
+            <Avatar className="h-8 w-8 bg-yellow-200 flex items-center justify-center">
+              <AvatarImage
+                className="object-cover"
+                src="/lovable-uploads/8e1f1c48-bd1c-47d6-b0dd-7682f9789473.png"
+                alt="Nitidina Assistant Avatar"
+              />
+            </Avatar>
+          </Button>
         )}
       </div>
 
@@ -158,10 +165,7 @@ const DashboardPage = () => {
       
       <NitidinaPanel
         isOpen={chatOpen}
-        onToggle={() => {
-          setChatOpen(true);
-          setAgentsChatOpen(false);
-        }}
+        onToggle={() => setChatOpen(false)}
         showCloseButton={true}
       />
     </div>
