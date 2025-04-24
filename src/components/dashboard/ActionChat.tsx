@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert } from "@/pages/dashboard/DashboardPage";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
   alert: Alert;
@@ -78,7 +79,12 @@ export default function ActionChat({ alert, onClose }: Props) {
     >
       {/* HEADER */}
       <div className="flex items-center justify-between px-4 py-2 border-b">
-        <h3 className="font-semibold">Nítido&nbsp;Agents</h3>
+        <div className="flex items-center gap-2">
+          <Avatar className="h-6 w-6">
+            <AvatarImage src="/lovable-uploads/b8d396f2-3eda-4bb3-8d5b-c9374425a468.png" alt="Nítido Agent" />
+          </Avatar>
+          <h3 className="font-semibold">Nítido&nbsp;Agents</h3>
+        </div>
         <Button
           variant="ghost"
           size="icon"
